@@ -3,18 +3,17 @@ import nl.saxion.app.SaxionApp;
 import java.awt.Color;
 
 public class ObstacleCar {
-    private final int x;
-    private int y;
+    private int x, y;
+    private int speed;
     private final int width = 50;
     private final int height = 100;
 
-    public ObstacleCar(int x, int y) {
+    public ObstacleCar(int x, int y, int obstacleSpeed) {
         this.x = x;
         this.y = y;
     }
 
-    public void update() {
-        int speed = 5;
+    public void update() {;
         y += speed; // Move down
     }
 

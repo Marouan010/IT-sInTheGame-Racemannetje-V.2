@@ -9,7 +9,7 @@ import java.util.Random;
 
 public class BasicGame implements GameLoop {
     public static void main(String[] args) {
-        SaxionApp.startGameLoop(new BasicGame(), 1000, 1000, 40);
+        SaxionApp.startGameLoop(new BasicGame(), 1000, 1000, 60);
     }
 
     private final int screenWidth = 1000;
@@ -21,6 +21,7 @@ public class BasicGame implements GameLoop {
     private int frameCount = 0;
     private int timer = 0;
     private boolean gameOver = false;
+    private int obstacleSpeed = 5;
 
     @Override
     public void init() {
@@ -33,6 +34,16 @@ public class BasicGame implements GameLoop {
             SaxionApp.clear();
             timer++;
 
+            if (!gameOver) {
+                if (timer % (60 * 5) == 0) {
+                    int maxObstacleSpeed = 20;
+                    obstacleSpeed = Math.min(obstacleSpeed + 1, maxObstacleSpeed);
+                }
+            }
+
+            SaxionApp.setFill(Color.YELLOW); // Optional: Choose a color for the speed display
+            SaxionApp.drawText("Speed: " + obstacleSpeed, 20, 60, 20);
+
             drawLanes();
             player.update();
             player.draw();
@@ -40,8 +51,6 @@ public class BasicGame implements GameLoop {
             updateObstacles();
             obstacles.removeIf(o -> o.getY() > screenHeight);
             checkCollision();
-
-
 
 
             SaxionApp.drawText("Time survived: " + timer / 40 + "s", 20, 30, 30);
@@ -78,12 +87,12 @@ public class BasicGame implements GameLoop {
 
     private void spawnObstacles() {
         frameCount++;
-        if (frameCount >= 40) {
+        if (frameCount >= 60) {
             frameCount = 0;
             Random rand = new Random();
             int lane = rand.nextInt(5);
             int x = lane * laneWidth + laneWidth / 2 - 25;
-            obstacles.add(new ObstacleCar(x, -100));
+            obstacles.add(new ObstacleCar(x, -100, obstacleSpeed));
         }
     }
 
