@@ -3,11 +3,13 @@ import nl.saxion.app.interaction.GameLoop;
 import nl.saxion.app.interaction.KeyboardEvent;
 import nl.saxion.app.interaction.MouseEvent;
 
+import java.util.ArrayList;
+
 public class BasicGame implements GameLoop {
 
     public static final int screenWidth = 670;
     public static final int screenHeight = 780;
-    public static final int FPS = 60;
+    public static final int FPS = 90;
 
     public static void main(String[] args) {
         SaxionApp.startGameLoop(new BasicGame(), screenWidth, screenHeight, 1000/FPS);
@@ -15,10 +17,14 @@ public class BasicGame implements GameLoop {
 
     Track track = new Track();
     Player player = new Player();
+    SpawnObjects spawn = new SpawnObjects();
+
+    EnemyCar firstCar = new EnemyCar(10, -100, 65, 140, 1, 1);
 
     @Override
     public void init() {
-
+        spawn.spawnedCars.add(firstCar);
+        SaxionApp.drawImage("resource/auto.png", firstCar.x, firstCar.y, firstCar.width, firstCar.height);
     }
 
     @Override
@@ -27,6 +33,24 @@ public class BasicGame implements GameLoop {
 
         track.draw();
         player.draw();
+        spawn.car();
+
+        SaxionApp.drawText(String.valueOf(track.speed), 200, 100, 50); // trackspeed debug
+
+        // de rest van de code in de loop is gekopieerd uit spawnobjects, omdat de trackspeed en carspeed gewoon niet
+        // willen updaten via de void methodes, dus plakte ik ze hier neer om dat ff te fixen
+        for (int i = 0; i < spawn.spawnedCars.size(); i++) {
+            SaxionApp.drawImage(spawn.spawnedCars.get(i).carType, spawn.spawnedCars.get(i).x, spawn.spawnedCars.get(i).y, spawn.spawnedCars.get(i).width, spawn.spawnedCars.get(i).height);
+            spawn.spawnedCars.get(i).y = spawn.spawnedCars.get(i).y - spawn.spawnedCars.get(i).speed + track.speed;
+        }
+
+        if (player.upPressed) {
+            track.speed++;
+        }
+        if (player.downPressed) {
+            track.speed--;
+        }
+
     }
 
     @Override

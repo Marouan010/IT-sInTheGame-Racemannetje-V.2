@@ -3,6 +3,8 @@ import nl.saxion.app.SaxionApp;
 import java.nio.file.LinkPermission;
 
 public class Player {
+    Track track = new Track();
+
     String imageFile = "resource/auto me.png";
 
     int width = 65;
@@ -17,11 +19,17 @@ public class Player {
     boolean downPressed = false;
 
     public void InputCheck() {
-        if (leftPressed) {
+        if (leftPressed && x > 135) {
             x -= speed;
         }
-        if (rightPressed) {
+        if (rightPressed && x < 460) {
             x+= speed;
+        }
+        if (upPressed) {
+            track.speed++;
+        }
+        if (downPressed) {
+            track.speed--;
         }
     }
 

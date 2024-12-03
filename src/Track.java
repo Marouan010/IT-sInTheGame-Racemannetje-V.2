@@ -4,8 +4,7 @@ public class Track {
     String imageFile = "resource/baan stil.png";
 
     int speed = 10;
-    int x = 0;
-    int y = 0;
+    int x, y = 0;
     int width = BasicGame.screenWidth;
     int height = BasicGame.screenHeight;
 
