@@ -9,11 +9,11 @@ import java.util.Random;
 
 public class BasicGame implements GameLoop {
     public static void main(String[] args) {
-        SaxionApp.startGameLoop(new BasicGame(), 1000, 1000, 60);
+        SaxionApp.startGameLoop(new BasicGame(), 670, 780, 40);
     }
 
-    private final int screenWidth = 1000;
-    private final int screenHeight = 1000;
+    private final int screenWidth = 670;
+    private final int screenHeight = 780;
     private final int laneWidth = screenWidth / 5;
 
     private PlayerCar player;
@@ -25,7 +25,7 @@ public class BasicGame implements GameLoop {
 
     @Override
     public void init() {
-        player = new PlayerCar(screenWidth / 2 - 25, screenHeight - 150);
+        player = new PlayerCar(screenWidth / 2 , screenHeight - 150);
     }
 
     @Override
@@ -35,13 +35,13 @@ public class BasicGame implements GameLoop {
             timer++;
 
             if (!gameOver) {
-                if (timer % (60 * 5) == 0) {
+                if (timer % (40 * 5) == 0) {
                     int maxObstacleSpeed = 20;
                     obstacleSpeed = Math.min(obstacleSpeed + 1, maxObstacleSpeed);
                 }
             }
 
-            SaxionApp.setFill(Color.YELLOW); // Optional: Choose a color for the speed display
+            SaxionApp.setFill(Color.YELLOW);
             SaxionApp.drawText("Speed: " + obstacleSpeed, 20, 60, 20);
 
             drawLanes();
@@ -53,7 +53,7 @@ public class BasicGame implements GameLoop {
             checkCollision();
 
 
-            SaxionApp.drawText("Time survived: " + timer / 40 + "s", 20, 30, 30);
+            SaxionApp.drawText("Time survived: " + timer/ 18 + "s", 20, 30, 30);
         } else {
             SaxionApp.clear();
             SaxionApp.drawText("Game Over! Press R to Restart", screenWidth / 2 - 150, screenHeight / 2, 20);
@@ -62,10 +62,10 @@ public class BasicGame implements GameLoop {
 
     @Override
     public void keyboardEvent(KeyboardEvent keyboardEvent) {
-        if (keyboardEvent.getKeyCode() == KeyboardEvent.VK_LEFT && keyboardEvent.isKeyPressed()) {
+        if (keyboardEvent.getKeyCode() == KeyboardEvent.VK_A && keyboardEvent.isKeyPressed()) {
             player.moveLeft();
         }
-        if (keyboardEvent.getKeyCode() == KeyboardEvent.VK_RIGHT && keyboardEvent.isKeyPressed()) {
+        if (keyboardEvent.getKeyCode() == KeyboardEvent.VK_D && keyboardEvent.isKeyPressed()) {
             player.moveRight();
         }
         if (keyboardEvent.getKeyCode() == KeyboardEvent.VK_R && keyboardEvent.isKeyPressed() && gameOver) {
@@ -87,7 +87,7 @@ public class BasicGame implements GameLoop {
 
     private void spawnObstacles() {
         frameCount++;
-        if (frameCount >= 60) {
+        if (frameCount >= 30) {
             frameCount = 0;
             Random rand = new Random();
             int lane = rand.nextInt(5);

@@ -13,7 +13,8 @@ public class PlayerCar {
     public PlayerCar(int x, int y) {
         this.x = x;
         this.y = y;
-        laneWidth = 1000 / 5;
+        int screenWidth = 670;
+        laneWidth = screenWidth / 5;
     }
 
     public void update() {
