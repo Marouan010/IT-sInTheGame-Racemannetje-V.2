@@ -3,18 +3,20 @@ import nl.saxion.app.SaxionApp;
 import java.awt.Color;
 
 public class ObstacleCar {
-    private int x, y;
-    private int speed;
+    private final int x;
+    private int y;
+    private final int speed = SaxionApp.getRandomValueBetween(30, 60);
     private final int width = 50;
     private final int height = 100;
+    private final int screenWidth = 670;
 
     public ObstacleCar(int x, int y, int obstacleSpeed) {
         this.x = x;
         this.y = y;
     }
 
-    public void update() {;
-        y += speed; // Move down
+    public void update() {
+        y += speed;
     }
 
     public void draw() {
