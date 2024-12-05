@@ -47,18 +47,18 @@ public class Player {
         }
     }
 
-   // Decreases your fuel faster
+    // Decreases your fuel faster
     public void decreaseFuelAcceleration() {
         if (fuel > 0) {
             fuel -= drainSpeed;
         }
-
-        while (fuel > 0) {
-            fuel -= drainSpeed;
-
-        }
+// Code for slowly draining fuel w/o user input
+//        while (fuel > 0) {
+//            fuel -= drainSpeed;
+//
+//            Code for waiting comes here
+//        }
     }
-
 
 
     // Fuel gauge itself
@@ -70,7 +70,7 @@ public class Player {
         SaxionApp.drawRectangle(fuelStartX, currentY, fuelGaugeWidth, currentHeight);
         SaxionApp.setBorderColor(new Color(colorR, colorG, colorB));
         SaxionApp.setFill(new Color(colorR, colorG, colorB));
-        SaxionApp.drawText((int)((fuel / (double) maxFuel) * 100) + "%", fuelStartX - 20, fuelStartY + 350, 20);
+        SaxionApp.drawText((int) ((fuel / (double) maxFuel) * 100) + "%", fuelStartX - 20, fuelStartY + 350, 20);
         SaxionApp.setBorderColor(null);
     }
 
