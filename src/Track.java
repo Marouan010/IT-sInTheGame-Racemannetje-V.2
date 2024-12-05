@@ -10,6 +10,7 @@ public class Track {
     int height = BasicGame.screenHeight;
 
     public void drawFuelBar(){SaxionApp.drawImage(fuelBar, 0, -50, 670, 780);}
+
     public void drawFirst() {
         SaxionApp.drawImage(imageFile, x, y, width, height);
     }
