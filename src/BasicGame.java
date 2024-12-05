@@ -3,6 +3,7 @@ import nl.saxion.app.interaction.GameLoop;
 import nl.saxion.app.interaction.KeyboardEvent;
 import nl.saxion.app.interaction.MouseEvent;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 public class BasicGame implements GameLoop {
@@ -11,19 +12,24 @@ public class BasicGame implements GameLoop {
     public static final int screenHeight = 780;
     public static final int FPS = 90;
     public static int frames = 0;
+    GameTimer timer = new GameTimer(FPS);
 
     public static void main(String[] args) {
         SaxionApp.startGameLoop(new BasicGame(), screenWidth, screenHeight, 1000/FPS);
     }
 
-    Track track = new Track();
     Player player = new Player();
+    Track track = new Track();
     SpawnObjects spawn = new SpawnObjects();
 
     EnemyCar firstCar = new EnemyCar(10, -100, 65, 140, 1, 1);
 
     @Override
     public void init() {
+        player.boundingBox= new Rectangle(BasicGame.screenWidth / 2 - 42, BasicGame.screenHeight - player.height - 15, 65, 140);
+
+
+
         spawn.spawnedCars.add(firstCar);
         SaxionApp.drawImage("resource/auto.png", firstCar.x, firstCar.y, firstCar.width, firstCar.height);
     }
@@ -31,6 +37,8 @@ public class BasicGame implements GameLoop {
     @Override
     public void loop() {
         frames++;
+        timer.updateTimer();
+
         if (frames%(FPS*10) == 0) {
             track.speed++;
         }
@@ -39,13 +47,18 @@ public class BasicGame implements GameLoop {
         if (player.fuel == 0) {
             track.speed = 0;
             player.speed = 0;
+            timer.timerStop();
         }
+
 
         SaxionApp.clear();
 
         track.draw();
         player.draw();
         spawn.car();
+
+        String currentTime = timer.getTime();
+        SaxionApp.drawText(" " + currentTime, 10, 30, 40);
 
         SaxionApp.drawText(String.valueOf(track.speed), 200, 100, 50); // trackspeed debug
 
