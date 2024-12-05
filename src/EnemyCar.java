@@ -5,7 +5,6 @@ import java.util.ArrayList;
 public class EnemyCar {
     String[] carTypes = {
             "resource/auto.png",
-            "resource/auto 2.png",
             "resource/auto 3.png",
             "resource/auto 4.png"
     };
@@ -15,7 +14,7 @@ public class EnemyCar {
     int speed;
     int carTrack;
     boolean hasSpawned = false;
-    String carType = carTypes[SaxionApp.getRandomValueBetween(0,4)];
+    String carType = carTypes[SaxionApp.getRandomValueBetween(0,3)];
 
     public EnemyCar(int x, int y, int width, int height, int speed, int carTrack) {
         this.y = y;

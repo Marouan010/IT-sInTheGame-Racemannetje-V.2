@@ -3,14 +3,6 @@ import nl.saxion.app.SaxionApp;
 import java.util.ArrayList;
 
 public class SpawnObjects {
-    Track track = new Track();
-    String[] carTypes = {
-            "resource/auto.png",
-            "resource/auto 2.png",
-            "resource/auto 3.png",
-            "resource/auto 4.png"
-    };
-
 
     ArrayList<EnemyCar> spawnedCars = new ArrayList<>();
     int lastTrack = 1;
@@ -23,7 +15,7 @@ public class SpawnObjects {
         //}
 
         for (int j = 0; j < spawnedCars.size(); j++) {
-            if (spawnedCars.get(j).y >= 50 && spawnedCars.get(j).y <= 780 && !spawnedCars.get(j).hasSpawned) {
+            if (spawnedCars.get(j).y >= 200 && spawnedCars.get(j).y <= 780 && !spawnedCars.get(j).hasSpawned) {
 
                 int randomTrack = SaxionApp.getRandomValueBetween(1, 6);
 

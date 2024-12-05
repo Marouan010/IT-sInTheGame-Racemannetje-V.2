@@ -10,6 +10,7 @@ public class BasicGame implements GameLoop {
     public static final int screenWidth = 670;
     public static final int screenHeight = 780;
     public static final int FPS = 90;
+    public static int frames = 0;
 
     public static void main(String[] args) {
         SaxionApp.startGameLoop(new BasicGame(), screenWidth, screenHeight, 1000/FPS);
@@ -29,6 +30,17 @@ public class BasicGame implements GameLoop {
 
     @Override
     public void loop() {
+        frames++;
+        if (frames%(FPS*10) == 0) {
+            track.speed++;
+        }
+
+        player.decreaseFuelAcceleration();
+        if (player.fuel == 0) {
+            track.speed = 0;
+            player.speed = 0;
+        }
+
         SaxionApp.clear();
 
         track.draw();
