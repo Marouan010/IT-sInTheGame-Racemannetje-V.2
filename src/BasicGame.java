@@ -56,7 +56,7 @@ public class BasicGame implements GameLoop {
             spawn.spawnedCars.get(i).y = spawn.spawnedCars.get(i).y - spawn.spawnedCars.get(i).speed + track.speed;
         }
 
-        if (player.upPressed & track.speed <= 240) {
+        if (player.upPressed & track.speed <= 24) {
             track.speed++;
 
         }
