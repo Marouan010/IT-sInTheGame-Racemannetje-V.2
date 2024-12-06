@@ -1,5 +1,6 @@
 import nl.saxion.app.SaxionApp;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 public class EnemyCar {
@@ -15,6 +16,7 @@ public class EnemyCar {
     int carTrack;
     boolean hasSpawned = false;
     String carType = carTypes[SaxionApp.getRandomValueBetween(0,3)];
+    Rectangle boundingBox;
 
     public EnemyCar(int x, int y, int width, int height, int speed, int carTrack) {
         this.y = y;

@@ -12,6 +12,7 @@ public class Player {
     int x = BasicGame.screenWidth / 2 - 42;
     int y = BasicGame.screenHeight - height - 15;
     int speed = 10; // snelheid van links en rechts bewegen
+    Rectangle boundingBox;
 
     // Fuel gauge
     int maxFuel = 2500;
