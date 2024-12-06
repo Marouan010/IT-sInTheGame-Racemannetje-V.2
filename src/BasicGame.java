@@ -15,7 +15,7 @@ public class BasicGame implements GameLoop {
     GameTimer timer = new GameTimer(FPS);
 
     public static void main(String[] args) {
-        SaxionApp.startGameLoop(new BasicGame(), screenWidth, screenHeight, 1000/FPS);
+        SaxionApp.startGameLoop(new BasicGame(), screenWidth, screenHeight, 1000 / FPS);
     }
 
     Player player = new Player();
@@ -26,8 +26,7 @@ public class BasicGame implements GameLoop {
 
     @Override
     public void init() {
-        player.boundingBox= new Rectangle(BasicGame.screenWidth / 2 - 42, BasicGame.screenHeight - player.height - 15, 65, 140);
-
+        player.boundingBox = new Rectangle(BasicGame.screenWidth / 2 - 42, BasicGame.screenHeight - player.height - 15, 65, 140);
 
 
         spawn.spawnedCars.add(firstCar);
@@ -37,9 +36,8 @@ public class BasicGame implements GameLoop {
     @Override
     public void loop() {
         frames++;
-        timer.updateTimer();
 
-        if (frames%(FPS*10) == 0) {
+        if (frames % (FPS * 10) == 0) {
             track.speed++;
         }
 
@@ -48,8 +46,8 @@ public class BasicGame implements GameLoop {
             track.speed = 0;
             player.speed = 0;
             timer.timerStop();
-        }
-
+        } else
+            timer.updateTimer();
 
         SaxionApp.clear();
 
