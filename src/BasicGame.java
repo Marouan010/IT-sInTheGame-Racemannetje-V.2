@@ -41,9 +41,9 @@ public class BasicGame implements GameLoop {
     public void loop() {
         frames++;
 
-        if (frames % (FPS * 10) == 0) {
-            track.speed++;
-        }
+//        if (frames % (FPS * 10) == 0) {
+//            track.speed++;
+//        }
 
         player.decreaseFuelAcceleration();
         if (player.fuel == 0) {

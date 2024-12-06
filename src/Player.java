@@ -6,6 +6,7 @@ public class Player {
     Track track = new Track();
 
     String imageFile = "resource/auto me.png";
+    String fuelTankIcon = "resource/fuel tank 60-60.png";
 
     int width = 65;
     int height = 140;
@@ -17,7 +18,6 @@ public class Player {
     // Fuel gauge
     int maxFuel = 2500;
     volatile int fuel = maxFuel;
-    int wait = 50;
     int drainSpeed = 1;
     int fuelGaugeWidth = 15;
     int fuelGaugeHeight = 332;
@@ -35,9 +35,11 @@ public class Player {
     public void InputCheck() {
         if (leftPressed && x > 135) {
             x -= speed;
+            boundingBox. x -= speed;
         }
         if (rightPressed && x < 460) {
             x += speed;
+            boundingBox. y += speed;
         }
         if (upPressed) {
             track.speed++;
@@ -71,14 +73,23 @@ public class Player {
         SaxionApp.drawRectangle(fuelStartX, currentY, fuelGaugeWidth, currentHeight);
         SaxionApp.setBorderColor(new Color(colorR, colorG, colorB));
         SaxionApp.setFill(new Color(colorR, colorG, colorB));
-        SaxionApp.drawText((int) ((fuel / (double) maxFuel) * 100) + "%", fuelStartX - 20, fuelStartY + 350, 20);
-        SaxionApp.setBorderColor(null);
     }
 
+    public void drawFuelIcon() {
+        int currentHeight = (int) (fuelGaugeHeight * (fuel / (double) maxFuel));
+        int currentY = fuelStartY + (fuelGaugeHeight - currentHeight);
+        int x = 80;
+        if (y > 100) {
+            int y = currentY - 20;
+            SaxionApp.drawImage(fuelTankIcon, x, y);
+        }
+
+    }
     public void draw() {
         InputCheck();
         SaxionApp.drawImage(imageFile, x, y, width, height);
         drawFuelGauge();
+        drawFuelIcon();
     }
 
 }

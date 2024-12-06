@@ -16,7 +16,7 @@ public class EnemyCar {
     int carTrack;
     boolean hasSpawned = false;
     String carType = carTypes[SaxionApp.getRandomValueBetween(0,3)];
-    Rectangle boundingBox;
+
 
     public EnemyCar(int x, int y, int width, int height, int speed, int carTrack) {
         this.y = y;
@@ -27,16 +27,16 @@ public class EnemyCar {
 
         if (carTrack == 1) {
             this.x = 135;
-            this.speed = 9;
+            this.speed = SaxionApp.getRandomValueBetween(7, 9);
         } else if (carTrack == 2) {
             this.x = 211;
-            this.speed = 7;
+            this.speed = SaxionApp.getRandomValueBetween(5, 7);
         } else if (carTrack == 3) {
             this.x = 293;
-            this.speed = 5;
+            this.speed = SaxionApp.getRandomValueBetween(3, 5);
         } else if (carTrack == 4) {
             this.x = 379;
-            this.speed = 3;
+            this.speed = SaxionApp.getRandomValueBetween(1, 3);
         } else if (carTrack == 5) {
             this.x = 461;
             this.speed = 1;
