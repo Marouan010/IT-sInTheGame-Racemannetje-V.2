@@ -3,6 +3,8 @@ import nl.saxion.app.interaction.GameLoop;
 import nl.saxion.app.interaction.KeyboardEvent;
 import nl.saxion.app.interaction.MouseEvent;
 
+
+
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -27,6 +29,7 @@ public class BasicGame implements GameLoop {
     @Override
     public void init() {
         Sfx.backgroundsound();
+
 
         player.boundingBox = new Rectangle(BasicGame.screenWidth / 2 - 42, BasicGame.screenHeight - player.height - 15, 65, 140);
 
@@ -83,6 +86,11 @@ public class BasicGame implements GameLoop {
 
     @Override
     public void keyboardEvent(KeyboardEvent keyboardEvent) {
+
+        //toeter methode
+
+        Sfx.toeter(keyboardEvent);
+
         if (keyboardEvent.isKeyPressed()) {
             if (keyboardEvent.getKeyCode() == KeyboardEvent.VK_W || keyboardEvent.getKeyCode() == 38) {
                 player.upPressed = true;
@@ -96,6 +104,7 @@ public class BasicGame implements GameLoop {
             if (keyboardEvent.getKeyCode() == KeyboardEvent.VK_D || keyboardEvent.getKeyCode() == 39) {
                 player.rightPressed = true;
             }
+
         }
 
         if (!keyboardEvent.isKeyPressed()) {
@@ -118,5 +127,4 @@ public class BasicGame implements GameLoop {
     public void mouseEvent(MouseEvent mouseEvent) {
 
     }
-
 }
