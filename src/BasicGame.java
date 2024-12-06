@@ -5,6 +5,7 @@ import nl.saxion.app.interaction.MouseEvent;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class BasicGame implements GameLoop {
 
@@ -21,8 +22,8 @@ public class BasicGame implements GameLoop {
     Player player = new Player();
     Track track = new Track();
     SpawnObjects spawn = new SpawnObjects();
-
     EnemyCar firstCar = new EnemyCar(10, -100, 65, 140, 1, 1);
+
 
     @Override
     public void init() {
@@ -37,9 +38,10 @@ public class BasicGame implements GameLoop {
     public void loop() {
         frames++;
 
-        if (frames % (FPS * 10) == 0) {
-            track.speed++;
-        }
+        // Zorgt ervoor dat er elke "10 seconden" de tracksnelheid met 1 omhoog gaat.
+//        if (frames % (FPS * 10) == 0) {
+//            track.speed++;
+//        }
 
         player.decreaseFuelAcceleration();
         if (player.fuel == 0) {
@@ -67,12 +69,17 @@ public class BasicGame implements GameLoop {
             spawn.spawnedCars.get(i).y = spawn.spawnedCars.get(i).y - spawn.spawnedCars.get(i).speed + track.speed;
         }
 
-        if (player.upPressed & track.speed <= 240) {
+        if (player.upPressed & track.speed <= 24) {
             track.speed++;
 
         }
-        if (player.downPressed & track.speed >= 9) {
+        if (player.downPressed & track.speed >= 11) {
             track.speed--;
+        }
+
+        if (player.boundingBox.intersects(spawn.boundingBox)){
+            System.out.println("You crashed!");
+
         }
 
     }

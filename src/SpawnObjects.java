@@ -1,5 +1,6 @@
 import nl.saxion.app.SaxionApp;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 public class SpawnObjects {
@@ -7,6 +8,7 @@ public class SpawnObjects {
     ArrayList<EnemyCar> spawnedCars = new ArrayList<>();
     int lastTrack = 1;
     String lastCarType = "";
+    Rectangle boundingBox;
 
     public void car() {
         //for (int i = 0; i < spawnedCars.size(); i++) {
@@ -24,6 +26,7 @@ public class SpawnObjects {
                 }
 
                 EnemyCar car = new EnemyCar(10, -300, 65, 140, 5, randomTrack);
+
 
                 lastTrack = randomTrack;
 

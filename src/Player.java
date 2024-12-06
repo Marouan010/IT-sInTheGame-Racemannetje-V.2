@@ -35,9 +35,11 @@ public class Player {
     public void InputCheck() {
         if (leftPressed && x > 135) {
             x -= speed;
+            boundingBox. x -= speed;
         }
         if (rightPressed && x < 460) {
             x += speed;
+            boundingBox. y += speed;
         }
         if (upPressed) {
             track.speed++;
