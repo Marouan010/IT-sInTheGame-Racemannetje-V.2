@@ -26,11 +26,15 @@ public class BasicGame implements GameLoop {
 
     @Override
     public void init() {
+        Sfx.backgroundsound();
+
         player.boundingBox = new Rectangle(BasicGame.screenWidth / 2 - 42, BasicGame.screenHeight - player.height - 15, 65, 140);
 
 
         spawn.spawnedCars.add(firstCar);
         SaxionApp.drawImage("resource/auto.png", firstCar.x, firstCar.y, firstCar.width, firstCar.height);
+
+
     }
 
     @Override
@@ -114,4 +118,5 @@ public class BasicGame implements GameLoop {
     public void mouseEvent(MouseEvent mouseEvent) {
 
     }
+
 }
