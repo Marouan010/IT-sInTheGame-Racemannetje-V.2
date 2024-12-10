@@ -7,6 +7,7 @@ public class Player {
 
     String imageFile = "resource/auto me.png";
     String fuelTankIcon = "resource/fuel tank 60-60.png";
+    String speedometer = "resource/Speedometer.png";
 
     int width = 65;
     int height = 140;
@@ -27,6 +28,11 @@ public class Player {
     int colorG = 0;
     int colorB = 0;
 
+    // Speedometer
+    int xS= 50;
+    int yS = 50;
+
+
     boolean leftPressed = false;
     boolean rightPressed = false;
     boolean upPressed = false;
@@ -35,11 +41,11 @@ public class Player {
     public void InputCheck() {
         if (leftPressed && x > 135) {
             x -= speed;
-            boundingBox. x -= speed;
+            boundingBox.x -= speed;
         }
         if (rightPressed && x < 460) {
             x += speed;
-            boundingBox. y += speed;
+            boundingBox.y += speed;
         }
         if (upPressed) {
             track.speed++;
@@ -55,12 +61,6 @@ public class Player {
         if (fuel > 0) {
             fuel -= drainSpeed;
         }
-// Code for slowly draining fuel w/o user input
-//        while (fuel > 0) {
-//            fuel -= drainSpeed;
-//
-//            Code for waiting comes here
-//        }
     }
 
 
@@ -85,6 +85,11 @@ public class Player {
         }
 
     }
+
+    public void drawSpeedometer(){
+        SaxionApp.drawImage(speedometer, xS, yS);
+    }
+
     public void draw() {
         InputCheck();
         SaxionApp.drawImage(imageFile, x, y, width, height);
