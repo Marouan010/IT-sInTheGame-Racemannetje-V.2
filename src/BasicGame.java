@@ -90,6 +90,8 @@ public class BasicGame implements GameLoop {
         //toeter methode
 
         Sfx.toeter(keyboardEvent);
+        Sfx.remmen(keyboardEvent);
+
 
         if (keyboardEvent.isKeyPressed()) {
             if (keyboardEvent.getKeyCode() == KeyboardEvent.VK_W || keyboardEvent.getKeyCode() == 38) {

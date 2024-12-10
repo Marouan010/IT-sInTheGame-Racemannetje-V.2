@@ -21,11 +21,24 @@ public class Sfx {
 
         }
 
-        }
-    public static void coins(){
 
 
         }
+    public static void remmen(KeyboardEvent KeyboardEvent){
+        if(KeyboardEvent.isKeyPressed()){
+            if(KeyboardEvent.getKeyCode() == KeyboardEvent.VK_S){
+                SaxionApp.playSound("resource/brakingsound.wav");
+            }
+            }
+
+
+        }
+
+
+
     }
+
+
+
 
 
