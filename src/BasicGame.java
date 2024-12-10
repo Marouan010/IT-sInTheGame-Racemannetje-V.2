@@ -6,7 +6,6 @@ import nl.saxion.app.interaction.MouseEvent;
 
 
 import java.awt.*;
-import java.util.ArrayList;
 
 public class BasicGame implements GameLoop {
 
@@ -25,16 +24,24 @@ public class BasicGame implements GameLoop {
     SpawnObjects spawn = new SpawnObjects();
 
     EnemyCar firstCar = new EnemyCar(10, -100, 65, 140, 1, 1);
+    int initY = -300;
 
     @Override
     public void init() {
         Sfx.backgroundsound();
 
+        for (int j = 0; j < 3; j++) {
+            Coin firstCoin = new Coin(10, initY, 70, 70, 1);
+            initY-= 55;
+            spawn.spawnedCoins.add(firstCoin);
+            SaxionApp.drawImage("resource/coin 70-70.png", firstCoin.x, firstCoin.y, firstCoin.width, firstCoin.height);
+        }
+
 
         player.boundingBox = new Rectangle(BasicGame.screenWidth / 2 - 42, BasicGame.screenHeight - player.height - 15, 65, 140);
 
 
-        spawn.spawnedCars.add(firstCar);
+        spawn.spawnedObjects.add(firstCar);
         SaxionApp.drawImage("resource/auto.png", firstCar.x, firstCar.y, firstCar.width, firstCar.height);
 
 
@@ -43,10 +50,6 @@ public class BasicGame implements GameLoop {
     @Override
     public void loop() {
         frames++;
-
-//        if (frames % (FPS * 10) == 0) {
-//            track.speed++;
-//        }
 
         player.decreaseFuelAcceleration();
         if (player.fuel == 0) {
@@ -60,7 +63,8 @@ public class BasicGame implements GameLoop {
 
         track.draw();
         player.draw();
-        spawn.car();
+        spawn.object();
+        spawn.coin();
 
         String currentTime = timer.getTime();
         SaxionApp.drawText(" " + currentTime, 10, 30, 40);
@@ -69,10 +73,20 @@ public class BasicGame implements GameLoop {
 
         // de rest van de code in de loop is gekopieerd uit spawnobjects, omdat de trackspeed en carspeed gewoon niet
         // willen updaten via de void methodes, dus plakte ik ze hier neer om dat ff te fixen
-        for (int i = 0; i < spawn.spawnedCars.size(); i++) {
-            SaxionApp.drawImage(spawn.spawnedCars.get(i).carType, spawn.spawnedCars.get(i).x, spawn.spawnedCars.get(i).y, spawn.spawnedCars.get(i).width, spawn.spawnedCars.get(i).height);
-            spawn.spawnedCars.get(i).y = spawn.spawnedCars.get(i).y - spawn.spawnedCars.get(i).speed + track.speed;
+        for (int i = 0; i < spawn.spawnedObjects.size(); i++) {
+            SaxionApp.drawImage(spawn.spawnedObjects.get(i).carType, spawn.spawnedObjects.get(i).x, spawn.spawnedObjects.get(i).y, spawn.spawnedObjects.get(i).width, spawn.spawnedObjects.get(i).height);
+            spawn.spawnedObjects.get(i).y = spawn.spawnedObjects.get(i).y - spawn.spawnedObjects.get(i).speed + track.speed;
         }
+
+        for (int j = 0; j < spawn.spawnedCoins.size(); j++) {
+            SaxionApp.drawImage(spawn.spawnedCoins.get(j).coinImage, spawn.spawnedCoins.get(j).x, spawn.spawnedCoins.get(j).y, spawn.spawnedCoins.get(j).width, spawn.spawnedCoins.get(j).height);
+            spawn.spawnedCoins.get(j).y += (track.speed - 3);
+        }
+
+        //for (int j = 0; j < 3; j++) {
+          //  SaxionApp.drawImage("resource/coin 70-70.png", 300, initY, 70, 70);
+            //-= 55;
+        //}
 
         if (player.upPressed & track.speed <= 24) {
             track.speed++;
