@@ -30,7 +30,7 @@ public class SpawnObjects {
 
                 if (randomObject == 1) {
                     EnemyCar cone = new EnemyCar(10, -300, 42, 42, 0, randomTrack);
-                    cone.speed = 0;
+                    cone.speed = 3;
                     cone.carType = "resource/cone 42-42.png";
                     cone.x+= 15;
                     spawnedObjects.add(cone);
@@ -53,21 +53,20 @@ public class SpawnObjects {
 
     public void coin() {
         for (int i = 0; i < spawnedCoins.size(); i++) {
-            if (spawnedCoins.get(i).y >= 200 && spawnedCoins.get(i).y <= 780 && !spawnedCoins.get(i).hasSpawned && spawnedCoins.size()<3) {
+            if (spawnedCoins.size()<3) {
                 coins = 0;
                 int randomTrack = SaxionApp.getRandomValueBetween(1,6);
 
                 for (int j = 0; j < 3; j++) {
                     Coin coin = new Coin(10, initY, 70, 70, randomTrack);
+                    coin.x -= 3;
                     spawnedCoins.add(coin);
                     initY-= 55;
                     coins++;
-                    System.out.println(coins);
                 }
                 initY = -300;
 
                 spawnedCoins.get(i).hasSpawned = true;
-                System.out.println("Coin added");
             }
 
             if (spawnedCoins.get(0).y > BasicGame.screenHeight) {

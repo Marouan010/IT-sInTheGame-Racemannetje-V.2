@@ -33,7 +33,7 @@ public class EnemyCar {
             this.speed = SaxionApp.getRandomValueBetween(5, 7);
         } else if (carTrack == 3) {
             this.x = 293;
-            this.speed = SaxionApp.getRandomValueBetween(3, 5);
+            this.speed = SaxionApp.getRandomValueBetween(4, 6);
         } else if (carTrack == 4) {
             this.x = 379;
             this.speed = SaxionApp.getRandomValueBetween(1, 3);
