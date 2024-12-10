@@ -8,6 +8,7 @@ public class Player {
     String imageFile = "resource/auto me.png";
     String fuelTankIcon = "resource/fuel tank 60-60.png";
     String speedometer = "resource/Speedometer.png";
+    String nummers = "resource/nummers.png";
 
     int width = 65;
     int height = 140;
@@ -29,8 +30,14 @@ public class Player {
     int colorB = 0;
 
     // Speedometer
-    int xS= 50;
+    int xS = 50;
     int yS = 50;
+
+    // Digital speedometer
+    int digitWidth = 50;
+    int digitHeight = 100;
+    int digitX = xS;
+    int digitY = yS + 50;
 
 
     boolean leftPressed = false;
@@ -86,8 +93,13 @@ public class Player {
 
     }
 
-    public void drawSpeedometer(){
+    public void drawSpeedometer() {
         SaxionApp.drawImage(speedometer, xS, yS);
+        int speed = Math.max(0, Math.min(track.speed, 99));
+        int ten = speed / 10;
+        int ones = speed % 10;
+
+
     }
 
     public void draw() {
