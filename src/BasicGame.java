@@ -24,6 +24,8 @@ public class BasicGame implements GameLoop {
     SpawnObjects spawn = new SpawnObjects();
 
     EnemyCar firstCar = new EnemyCar(10, -100, 65, 140, 1, 1);
+    Fuel firstFuel = new Fuel(1, -1000, 80, 80, 6);
+
     int initY = -300;
 
     double fastTrackSpeed = track.speed * 1.5;
@@ -48,6 +50,8 @@ public class BasicGame implements GameLoop {
         spawn.spawnedObjects.add(firstCar);
         SaxionApp.drawImage("resource/auto.png", firstCar.x, firstCar.y, firstCar.width, firstCar.height);
 
+        firstFuel.x = -100;
+        spawn.spawnedFuel.add(firstFuel);
 
     }
 
@@ -63,9 +67,14 @@ public class BasicGame implements GameLoop {
         } else
             timer.updateTimer();
 
+        if (player.fuel == player.maxFuel/2 || player.fuel == player.maxFuel/4 || player.fuel == player.maxFuel*3/4) {
+            spawn.spawnFuel = true;
+        }
+
         SaxionApp.clear();
 
         spawn.coin();
+        spawn.fuel();
         spawn.object();
 
         track.draw();
@@ -73,6 +82,10 @@ public class BasicGame implements GameLoop {
             SaxionApp.drawImage(spawn.spawnedCoins.get(j).coinImage, spawn.spawnedCoins.get(j).x, spawn.spawnedCoins.get(j).y, spawn.spawnedCoins.get(j).width, spawn.spawnedCoins.get(j).height);
             spawn.spawnedCoins.get(j).y += (track.speed - 3);
         } // update coins
+        for (int k = 0; k < spawn.spawnedFuel.size(); k++) {
+            SaxionApp.drawImage(spawn.spawnedFuel.get(k).fuelImage, spawn.spawnedFuel.get(k).x-10, spawn.spawnedFuel.get(k).y, spawn.spawnedFuel.get(k).width, spawn.spawnedFuel.get(k).height);
+            spawn.spawnedFuel.get(k).y += (track.speed - 3);
+        } // update fuel
         for (int i = 0; i < spawn.spawnedObjects.size(); i++) {
             SaxionApp.drawImage(spawn.spawnedObjects.get(i).carType, spawn.spawnedObjects.get(i).x, spawn.spawnedObjects.get(i).y, spawn.spawnedObjects.get(i).width, spawn.spawnedObjects.get(i).height);
             spawn.spawnedObjects.get(i).y = spawn.spawnedObjects.get(i).y - spawn.spawnedObjects.get(i).speed + track.speed;

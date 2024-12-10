@@ -5,15 +5,18 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class SpawnObjects {
+    Player player = new Player();
 
     ArrayList<EnemyCar> spawnedObjects = new ArrayList<>();
     ArrayList<Coin> spawnedCoins = new ArrayList<>();
+    ArrayList<Fuel> spawnedFuel = new ArrayList<>();
     int lastObjectTrack = 1;
     int lastCoinTrack = 1;
     String lastCarType = "";
     Rectangle boundingBox;
     int initY = -300;
     int coins = 3;
+    boolean spawnFuel = false;
 
     public void object() {
 
@@ -72,6 +75,25 @@ public class SpawnObjects {
             if (spawnedCoins.get(0).y > BasicGame.screenHeight) {
                 spawnedCoins.remove(0);
             }
+        }
+    }
+
+    public void fuel() {
+        for (int i = 0; i < spawnedFuel.size(); i++) {
+            if (spawnFuel) {
+                int randomTrack = SaxionApp.getRandomValueBetween(1, 6);
+
+                Fuel fuel = new Fuel(10, -200, 80, 80, randomTrack);
+                spawnedFuel.add(fuel);
+
+                spawnedFuel.get(i).hasSpawned = true;
+            }
+
+            if (spawnedFuel.get(0).y > BasicGame.screenHeight && spawnedFuel.size()>1) {
+                spawnedFuel.remove(0);
+            }
+
+            spawnFuel = false;
         }
     }
 }
