@@ -77,12 +77,10 @@ public class SpawnObjects {
     public void fuel() {
         for (int k = -1; k < spawnedFuel.size(); k++) {
             if (spawnedFuel.size() == 0) {
-                System.out.println("empty");
                 int randomTrack = SaxionApp.getRandomValueBetween(1, 6);
 
                 Fuel newFuel = new Fuel(10, -200, 80, 80, randomTrack);
                 spawnedFuel.add(newFuel);
-                System.out.println("added");
             } else {
                 if (spawnedFuel.get(k).y > BasicGame.screenHeight) {
                     spawnedFuel.remove(k);
