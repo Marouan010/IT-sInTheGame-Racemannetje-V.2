@@ -11,10 +11,8 @@ public class SpawnObjects {
     ArrayList<Coin> spawnedCoins = new ArrayList<>();
     ArrayList<Fuel> spawnedFuel = new ArrayList<>();
     int lastObjectTrack = 1;
-    Rectangle boundingBox;
     int initY = -300;
     int coins = 3;
-    boolean spawnFuel = false;
 
     public void object() {
 
@@ -77,21 +75,20 @@ public class SpawnObjects {
     }
 
     public void fuel() {
-        for (int i = 0; i < spawnedFuel.size(); i++) {
-            if (spawnFuel) {
+        for (int k = -1; k < spawnedFuel.size(); k++) {
+            if (spawnedFuel.size() == 0) {
+                System.out.println("empty");
                 int randomTrack = SaxionApp.getRandomValueBetween(1, 6);
 
-                Fuel fuel = new Fuel(10, -200, 80, 80, randomTrack);
-                spawnedFuel.add(fuel);
-
-                spawnedFuel.get(i).hasSpawned = true;
+                Fuel newFuel = new Fuel(10, -200, 80, 80, randomTrack);
+                spawnedFuel.add(newFuel);
+                System.out.println("added");
+            } else {
+                if (spawnedFuel.get(k).y > BasicGame.screenHeight) {
+                    spawnedFuel.remove(k);
+                }
+                return;
             }
-
-            if (spawnedFuel.get(0).y > BasicGame.screenHeight && spawnedFuel.size()>1) {
-                spawnedFuel.remove(0);
-            }
-
-            spawnFuel = false;
         }
     }
 }

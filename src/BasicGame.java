@@ -24,7 +24,6 @@ public class BasicGame implements GameLoop {
     SpawnObjects spawn = new SpawnObjects();
 
     EnemyCar firstCar = new EnemyCar(10, -100, 65, 140, 1, 1);
-    Fuel firstFuel = new Fuel(1, -1000, 80, 80, 6);
 
     int initY = -300;
 
@@ -48,13 +47,12 @@ public class BasicGame implements GameLoop {
         spawn.spawnedObjects.add(firstCar);
         SaxionApp.drawImage("resource/auto.png", firstCar.x, firstCar.y, firstCar.width, firstCar.height);
 
-        firstFuel.x = -100;
-        spawn.spawnedFuel.add(firstFuel);
-
     }
 
     @Override
     public void loop() {
+        SaxionApp.clear();
+
         frames++;
 
         player.decreaseFuelAcceleration();
@@ -65,14 +63,10 @@ public class BasicGame implements GameLoop {
         } else
             timer.updateTimer();
 
-        if (player.fuel == player.maxFuel/2 || player.fuel == player.maxFuel/4 || player.fuel == player.maxFuel*3/4) {
-            spawn.spawnFuel = true;
-        }
-
-        SaxionApp.clear();
-
         spawn.coin();
-        spawn.fuel();
+        if (player.fuel == player.maxFuel/2 || player.fuel == player.maxFuel/4 || player.fuel == player.maxFuel*3/4) {
+            spawn.fuel();
+        }
         spawn.object();
 
         track.draw();
