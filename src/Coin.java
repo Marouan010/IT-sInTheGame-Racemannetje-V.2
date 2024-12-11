@@ -1,11 +1,14 @@
 import nl.saxion.app.SaxionApp;
 
+import java.awt.*;
+
 public class Coin {
     int width, height = 70;
     int x, y;
     int carTrack;
     boolean hasSpawned = false;
     String coinImage = "resource/coin 70-70.png";
+    Rectangle boundingBox = new Rectangle();
 
     public Coin(int x, int y, int width, int height, int carTrack) {
         this.y = y;

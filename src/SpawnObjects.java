@@ -11,8 +11,6 @@ public class SpawnObjects {
     ArrayList<Coin> spawnedCoins = new ArrayList<>();
     ArrayList<Fuel> spawnedFuel = new ArrayList<>();
     int lastObjectTrack = 1;
-    int lastCoinTrack = 1;
-    String lastCarType = "";
     Rectangle boundingBox;
     int initY = -300;
     int coins = 3;
@@ -35,7 +33,7 @@ public class SpawnObjects {
                     EnemyCar cone = new EnemyCar(10, -300, 42, 42, 0, randomTrack);
                     cone.speed = 3;
                     cone.carType = "resource/cone 42-42.png";
-                    cone.x+= 15;
+                    cone.x+= 12;
                     spawnedObjects.add(cone);
                 } else {
                     EnemyCar car = new EnemyCar(10, -300, 65, 140, 5, randomTrack);
