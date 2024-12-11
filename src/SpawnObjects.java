@@ -82,9 +82,6 @@ public class SpawnObjects {
                 Fuel newFuel = new Fuel(10, -200, 80, 80, randomTrack);
                 spawnedFuel.add(newFuel);
             } else {
-                if (spawnedFuel.get(k).y > BasicGame.screenHeight) {
-                    spawnedFuel.remove(k);
-                }
                 return;
             }
         }

@@ -77,6 +77,10 @@ public class BasicGame implements GameLoop {
         for (int k = 0; k < spawn.spawnedFuel.size(); k++) {
             SaxionApp.drawImage(spawn.spawnedFuel.get(k).fuelImage, spawn.spawnedFuel.get(k).x-10, spawn.spawnedFuel.get(k).y, spawn.spawnedFuel.get(k).width, spawn.spawnedFuel.get(k).height);
             spawn.spawnedFuel.get(k).y += (track.speed - 3);
+
+            if (spawn.spawnedFuel.getFirst().y > screenHeight) {
+                spawn.spawnedFuel.removeFirst();
+            }
         } // update fuel
         for (int i = 0; i < spawn.spawnedObjects.size(); i++) {
             SaxionApp.drawImage(spawn.spawnedObjects.get(i).carType, spawn.spawnedObjects.get(i).x, spawn.spawnedObjects.get(i).y, spawn.spawnedObjects.get(i).width, spawn.spawnedObjects.get(i).height);
@@ -180,7 +184,7 @@ public class BasicGame implements GameLoop {
             // maak hier wijzigingen aan de hitboxen van de autos
 
             if (player.boundingBox.intersects(spawn.spawnedObjects.get(j).boundingBox)) {
-                SaxionApp.stopLoop();
+                //SaxionApp.stopLoop();
             }
         }
     }
