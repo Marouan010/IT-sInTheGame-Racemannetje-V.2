@@ -4,8 +4,8 @@ import nl.saxion.app.interaction.KeyboardEvent;
 import nl.saxion.app.interaction.MouseEvent;
 
 
-
 import java.awt.*;
+import java.text.CollationKey;
 
 public class BasicGame implements GameLoop {
 
@@ -39,7 +39,7 @@ public class BasicGame implements GameLoop {
 
         for (int j = 0; j < 3; j++) {
             Coin firstCoin = new Coin(10, initY, 70, 70, 1);
-            initY-= 55;
+            initY -= 55;
             spawn.spawnedCoins.add(firstCoin);
             SaxionApp.drawImage("resource/coin 70-70.png", firstCoin.x, firstCoin.y, firstCoin.width, firstCoin.height);
         }
@@ -64,7 +64,7 @@ public class BasicGame implements GameLoop {
             timer.updateTimer();
 
         spawn.coin();
-        if (player.fuel == player.maxFuel/2 || player.fuel == player.maxFuel/4 || player.fuel == player.maxFuel*3/4) {
+        if (player.fuel == player.maxFuel / 2 || player.fuel == player.maxFuel / 4 || player.fuel == player.maxFuel * 3 / 4) {
             spawn.fuel();
         }
         spawn.object();
@@ -75,7 +75,7 @@ public class BasicGame implements GameLoop {
             spawn.spawnedCoins.get(j).y += (track.speed - 3);
         } // update coins
         for (int k = 0; k < spawn.spawnedFuel.size(); k++) {
-            SaxionApp.drawImage(spawn.spawnedFuel.get(k).fuelImage, spawn.spawnedFuel.get(k).x-10, spawn.spawnedFuel.get(k).y, spawn.spawnedFuel.get(k).width, spawn.spawnedFuel.get(k).height);
+            SaxionApp.drawImage(spawn.spawnedFuel.get(k).fuelImage, spawn.spawnedFuel.get(k).x - 10, spawn.spawnedFuel.get(k).y, spawn.spawnedFuel.get(k).width, spawn.spawnedFuel.get(k).height);
             spawn.spawnedFuel.get(k).y += (track.speed - 3);
 
             if (spawn.spawnedFuel.getFirst().y > screenHeight) {
@@ -85,17 +85,24 @@ public class BasicGame implements GameLoop {
         for (int i = 0; i < spawn.spawnedObjects.size(); i++) {
             SaxionApp.drawImage(spawn.spawnedObjects.get(i).carType, spawn.spawnedObjects.get(i).x, spawn.spawnedObjects.get(i).y, spawn.spawnedObjects.get(i).width, spawn.spawnedObjects.get(i).height);
             spawn.spawnedObjects.get(i).y = spawn.spawnedObjects.get(i).y - spawn.spawnedObjects.get(i).speed + track.speed;
+
+
         } // update objects
         player.draw();
 
         checkForCollisions();
 
-        SaxionApp.drawText(String.valueOf(collectedCoins), 500, 100, 50); // coins collected
+        SaxionApp.drawImage("resource/punten 300-200.png", 310, -50);
+        SaxionApp.drawText(String.valueOf(collectedCoins), 435, 30, 50); // coins collected
+
 
         String currentTime = timer.getTime();
-        SaxionApp.drawText(" " + currentTime, 10, 30, 40);
+        SaxionApp.drawImage("resource/afstand 300-200.png", 50, -50); //Heb de afstand foto gebruikt, maar moet nog vervangen worden
+        SaxionApp.drawText(" " + currentTime, 165, 35, 40);
 
-        SaxionApp.drawText(String.valueOf(track.speed), 200, 100, 50); // trackspeed debug
+
+
+        SaxionApp.drawText(String.valueOf(track.speed), 300, 30, 50); // trackspeed debug
 
         if (player.upPressed) {
             track.speed = (int) fastTrackSpeed;
@@ -104,7 +111,6 @@ public class BasicGame implements GameLoop {
         } else {
             track.speed = normalTrackSpeed;
         }
-
     }
 
     @Override
@@ -158,6 +164,7 @@ public class BasicGame implements GameLoop {
         player.boundingBox.y = player.y;
         player.boundingBox.width = player.width;
         player.boundingBox.height = player.height;
+
         // maak hier wijzigingen aan de hitbox van de speler auto
     }
 
@@ -184,7 +191,7 @@ public class BasicGame implements GameLoop {
             // maak hier wijzigingen aan de hitboxen van de autos
 
             if (player.boundingBox.intersects(spawn.spawnedObjects.get(j).boundingBox)) {
-                //SaxionApp.stopLoop();
+//                SaxionApp.stopLoop();
             }
         }
     }
