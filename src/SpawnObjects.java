@@ -11,12 +11,8 @@ public class SpawnObjects {
     ArrayList<Coin> spawnedCoins = new ArrayList<>();
     ArrayList<Fuel> spawnedFuel = new ArrayList<>();
     int lastObjectTrack = 1;
-    int lastCoinTrack = 1;
-    String lastCarType = "";
-    Rectangle boundingBox;
     int initY = -300;
     int coins = 3;
-    boolean spawnFuel = false;
 
     public void object() {
 
@@ -35,7 +31,7 @@ public class SpawnObjects {
                     EnemyCar cone = new EnemyCar(10, -300, 42, 42, 0, randomTrack);
                     cone.speed = 3;
                     cone.carType = "resource/cone 42-42.png";
-                    cone.x+= 15;
+                    cone.x+= 12;
                     spawnedObjects.add(cone);
                 } else {
                     EnemyCar car = new EnemyCar(10, -300, 65, 140, 5, randomTrack);
@@ -79,21 +75,15 @@ public class SpawnObjects {
     }
 
     public void fuel() {
-        for (int i = 0; i < spawnedFuel.size(); i++) {
-            if (spawnFuel) {
+        for (int k = -1; k < spawnedFuel.size(); k++) {
+            if (spawnedFuel.size() == 0) {
                 int randomTrack = SaxionApp.getRandomValueBetween(1, 6);
 
-                Fuel fuel = new Fuel(10, -200, 80, 80, randomTrack);
-                spawnedFuel.add(fuel);
-
-                spawnedFuel.get(i).hasSpawned = true;
+                Fuel newFuel = new Fuel(10, -200, 80, 80, randomTrack);
+                spawnedFuel.add(newFuel);
+            } else {
+                return;
             }
-
-            if (spawnedFuel.get(0).y > BasicGame.screenHeight && spawnedFuel.size()>1) {
-                spawnedFuel.remove(0);
-            }
-
-            spawnFuel = false;
         }
     }
 }

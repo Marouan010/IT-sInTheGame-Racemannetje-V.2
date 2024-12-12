@@ -1,9 +1,12 @@
+import java.awt.*;
+
 public class Fuel {
     int width, height = 60;
     int x, y;
     int carTrack;
     boolean hasSpawned = false;
     String fuelImage = "resource/fuel tank 60-60.png";
+    Rectangle boundingBox = new Rectangle();
 
     public Fuel(int x, int y, int width, int height, int carTrack) {
         this.y = y;

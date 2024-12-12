@@ -24,13 +24,14 @@ public class BasicGame implements GameLoop {
     SpawnObjects spawn = new SpawnObjects();
 
     EnemyCar firstCar = new EnemyCar(10, -100, 65, 140, 1, 1);
-    Fuel firstFuel = new Fuel(1, -1000, 80, 80, 6);
 
     int initY = -300;
 
     double fastTrackSpeed = track.speed * 1.5;
     int normalTrackSpeed = track.speed;
     double slowTrackSpeed = track.speed * 0.5;
+
+    int collectedCoins = 0;
 
     @Override
     public void init() {
@@ -43,20 +44,15 @@ public class BasicGame implements GameLoop {
             SaxionApp.drawImage("resource/coin 70-70.png", firstCoin.x, firstCoin.y, firstCoin.width, firstCoin.height);
         }
 
-
-        player.boundingBox = new Rectangle(BasicGame.screenWidth / 2 - 42, BasicGame.screenHeight - player.height - 15, 65, 140);
-
-
         spawn.spawnedObjects.add(firstCar);
         SaxionApp.drawImage("resource/auto.png", firstCar.x, firstCar.y, firstCar.width, firstCar.height);
-
-        firstFuel.x = -100;
-        spawn.spawnedFuel.add(firstFuel);
 
     }
 
     @Override
     public void loop() {
+        SaxionApp.clear();
+
         frames++;
 
         player.decreaseFuelAcceleration();
@@ -67,14 +63,10 @@ public class BasicGame implements GameLoop {
         } else
             timer.updateTimer();
 
-        if (player.fuel == player.maxFuel/2 || player.fuel == player.maxFuel/4 || player.fuel == player.maxFuel*3/4) {
-            spawn.spawnFuel = true;
-        }
-
-        SaxionApp.clear();
-
         spawn.coin();
-        spawn.fuel();
+        if (player.fuel == player.maxFuel/2 || player.fuel == player.maxFuel/4 || player.fuel == player.maxFuel*3/4) {
+            spawn.fuel();
+        }
         spawn.object();
 
         track.draw();
@@ -85,12 +77,20 @@ public class BasicGame implements GameLoop {
         for (int k = 0; k < spawn.spawnedFuel.size(); k++) {
             SaxionApp.drawImage(spawn.spawnedFuel.get(k).fuelImage, spawn.spawnedFuel.get(k).x-10, spawn.spawnedFuel.get(k).y, spawn.spawnedFuel.get(k).width, spawn.spawnedFuel.get(k).height);
             spawn.spawnedFuel.get(k).y += (track.speed - 3);
+
+            if (spawn.spawnedFuel.getFirst().y > screenHeight) {
+                spawn.spawnedFuel.removeFirst();
+            }
         } // update fuel
         for (int i = 0; i < spawn.spawnedObjects.size(); i++) {
             SaxionApp.drawImage(spawn.spawnedObjects.get(i).carType, spawn.spawnedObjects.get(i).x, spawn.spawnedObjects.get(i).y, spawn.spawnedObjects.get(i).width, spawn.spawnedObjects.get(i).height);
             spawn.spawnedObjects.get(i).y = spawn.spawnedObjects.get(i).y - spawn.spawnedObjects.get(i).speed + track.speed;
         } // update objects
         player.draw();
+
+        checkForCollisions();
+
+        SaxionApp.drawText(String.valueOf(collectedCoins), 500, 100, 50); // coins collected
 
         String currentTime = timer.getTime();
         SaxionApp.drawText(" " + currentTime, 10, 30, 40);
@@ -151,5 +151,62 @@ public class BasicGame implements GameLoop {
     @Override
     public void mouseEvent(MouseEvent mouseEvent) {
 
+    }
+
+    public void updatePlayerBoundingBox() {
+        player.boundingBox.x = player.x;
+        player.boundingBox.y = player.y;
+        player.boundingBox.width = player.width;
+        player.boundingBox.height = player.height;
+        // maak hier wijzigingen aan de hitbox van de speler auto
+    }
+
+    public void updateCoinBoundingBox() {
+        for (int i = 0; i < spawn.spawnedCoins.size(); i++) {
+            spawn.spawnedCoins.get(i).boundingBox.x = spawn.spawnedCoins.get(i).x;
+            spawn.spawnedCoins.get(i).boundingBox.y = spawn.spawnedCoins.get(i).y;
+            spawn.spawnedCoins.get(i).boundingBox.width = spawn.spawnedCoins.get(i).width;
+            spawn.spawnedCoins.get(i).boundingBox.height = spawn.spawnedCoins.get(i).height;
+
+            if (player.boundingBox.intersects(spawn.spawnedCoins.get(i).boundingBox)) {
+                spawn.spawnedCoins.remove(i);
+                collectedCoins++;
+            }
+        }
+    }
+
+    public void updateObjectBoundingBox() {
+        for (int j = 0; j < spawn.spawnedObjects.size(); j++) {
+            spawn.spawnedObjects.get(j).boundingBox.x = spawn.spawnedObjects.get(j).x;
+            spawn.spawnedObjects.get(j).boundingBox.y = spawn.spawnedObjects.get(j).y;
+            spawn.spawnedObjects.get(j).boundingBox.width = spawn.spawnedObjects.get(j).width;
+            spawn.spawnedObjects.get(j).boundingBox.height = spawn.spawnedObjects.get(j).height;
+            // maak hier wijzigingen aan de hitboxen van de autos
+
+            if (player.boundingBox.intersects(spawn.spawnedObjects.get(j).boundingBox)) {
+                //SaxionApp.stopLoop();
+            }
+        }
+    }
+
+    public void updateFuelBoundingBox() {
+        for (int k = 0; k < spawn.spawnedFuel.size(); k++) {
+            spawn.spawnedFuel.get(k).boundingBox.x = spawn.spawnedFuel.get(k).x;
+            spawn.spawnedFuel.get(k).boundingBox.y = spawn.spawnedFuel.get(k).y;
+            spawn.spawnedFuel.get(k).boundingBox.width = spawn.spawnedFuel.get(k).width;
+            spawn.spawnedFuel.get(k).boundingBox.height = spawn.spawnedFuel.get(k).height;
+
+            if (player.boundingBox.intersects(spawn.spawnedFuel.get(k).boundingBox)) {
+                spawn.spawnedFuel.remove(spawn.spawnedFuel.get(k));
+                player.fuel = player.maxFuel; // verander hier hoeveel fuel erbij moet komen
+            }
+        }
+    }
+
+    public void checkForCollisions() {
+        updatePlayerBoundingBox();
+        updateCoinBoundingBox();
+        updateObjectBoundingBox();
+        updateFuelBoundingBox();
     }
 }
