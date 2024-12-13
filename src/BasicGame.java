@@ -23,9 +23,7 @@ public class BasicGame implements GameLoop {
     Track track = new Track();
     SpawnObjects spawn = new SpawnObjects();
 
-    EnemyCar firstCar = new EnemyCar(10, -100, 65, 140, 1, 1);
-
-    int initY = -300;
+    EnemyCar firstCar = new EnemyCar(10, -2000, 65, 140, 1, SaxionApp.getRandomValueBetween(1,6));
 
     double fastTrackSpeed = track.speed * 1.5;
     int normalTrackSpeed = track.speed;
@@ -39,8 +37,10 @@ public class BasicGame implements GameLoop {
 
         startButtonBounds = new Rectangle(224, 300, 225, 105);
 
+        int randomTrack = SaxionApp.getRandomValueBetween(1,6);
+        int initY = -1000;
         for (int j = 0; j < 3; j++) {
-            Coin firstCoin = new Coin(10, initY, 70, 70, 1);
+            Coin firstCoin = new Coin(10, initY, 70, 70, randomTrack);
             initY -= 55;
             spawn.spawnedCoins.add(firstCoin);
             SaxionApp.drawImage("resource/coin 70-70.png", firstCoin.x, firstCoin.y, firstCoin.width, firstCoin.height);
@@ -197,10 +197,10 @@ public class BasicGame implements GameLoop {
     
 
     public void updatePlayerBoundingBox() {
-        player.boundingBox.x = player.x;
-        player.boundingBox.y = player.y;
-        player.boundingBox.width = player.width;
-        player.boundingBox.height = player.height;
+        player.boundingBox.x = player.x + 7;
+        player.boundingBox.y = player.y + 15;
+        player.boundingBox.width = player.width - 14;
+        player.boundingBox.height = player.height - 30;
 
         // maak hier wijzigingen aan de hitbox van de speler auto
     }
