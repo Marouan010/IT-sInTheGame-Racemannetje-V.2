@@ -23,9 +23,7 @@ public class BasicGame implements GameLoop {
     Track track = new Track();
     SpawnObjects spawn = new SpawnObjects();
 
-    EnemyCar firstCar = new EnemyCar(10, -100, 65, 140, 1, 1);
-
-    int initY = -300;
+    EnemyCar firstCar = new EnemyCar(10, -2000, 65, 140, 1, SaxionApp.getRandomValueBetween(1,6));
 
     double fastTrackSpeed = track.speed * 1.5;
     int normalTrackSpeed = track.speed;
@@ -39,8 +37,10 @@ public class BasicGame implements GameLoop {
 
         startButtonBounds = new Rectangle(224, 300, 225, 105);
 
+        int randomTrack = SaxionApp.getRandomValueBetween(1,6);
+        int initY = -1000;
         for (int j = 0; j < 3; j++) {
-            Coin firstCoin = new Coin(10, initY, 70, 70, 1);
+            Coin firstCoin = new Coin(10, initY, 70, 70, randomTrack);
             initY -= 55;
             spawn.spawnedCoins.add(firstCoin);
             SaxionApp.drawImage("resource/coin 70-70.png", firstCoin.x, firstCoin.y, firstCoin.width, firstCoin.height);
@@ -95,11 +95,11 @@ public class BasicGame implements GameLoop {
         track.draw();
         for (int j = 0; j < spawn.spawnedCoins.size(); j++) {
             SaxionApp.drawImage(spawn.spawnedCoins.get(j).coinImage, spawn.spawnedCoins.get(j).x, spawn.spawnedCoins.get(j).y, spawn.spawnedCoins.get(j).width, spawn.spawnedCoins.get(j).height);
-            spawn.spawnedCoins.get(j).y += (track.speed - 3);
+            spawn.spawnedCoins.get(j).y += (track.speed - 4);
         } // update coins
         for (int k = 0; k < spawn.spawnedFuel.size(); k++) {
             SaxionApp.drawImage(spawn.spawnedFuel.get(k).fuelImage, spawn.spawnedFuel.get(k).x - 10, spawn.spawnedFuel.get(k).y, spawn.spawnedFuel.get(k).width, spawn.spawnedFuel.get(k).height);
-            spawn.spawnedFuel.get(k).y += (track.speed - 3);
+            spawn.spawnedFuel.get(k).y += (track.speed - 4);
 
             if (spawn.spawnedFuel.getFirst().y > screenHeight) {
                 spawn.spawnedFuel.removeFirst();
@@ -197,10 +197,10 @@ public class BasicGame implements GameLoop {
     
 
     public void updatePlayerBoundingBox() {
-        player.boundingBox.x = player.x;
-        player.boundingBox.y = player.y;
-        player.boundingBox.width = player.width;
-        player.boundingBox.height = player.height;
+        player.boundingBox.x = player.x + 7;
+        player.boundingBox.y = player.y + 15;
+        player.boundingBox.width = player.width - 14;
+        player.boundingBox.height = player.height - 30;
 
         // maak hier wijzigingen aan de hitbox van de speler auto
     }
@@ -228,7 +228,7 @@ public class BasicGame implements GameLoop {
             // maak hier wijzigingen aan de hitboxen van de autos
 
             if (player.boundingBox.intersects(spawn.spawnedObjects.get(j).boundingBox)) {
-//                SaxionApp.stopLoop();
+                SaxionApp.stopLoop();
             }
         }
     }
