@@ -14,8 +14,8 @@ public class Track {
         SaxionApp.drawImage(fuelBar, 0, -50, 670, 780);
     }
 
-    public void drawSpeedometer() {
-        SaxionApp.drawImage(speedometer, 50, 250);
+    public void drawSpeedometer(int x, int y) {
+        SaxionApp.drawImage(speedometer, x, y);
     }
 
     public void drawFirst() {
@@ -50,8 +50,8 @@ public class Track {
         drawFirst();
         drawSecond();
         drawFuelBar();
-        drawSpeedNumber(50, 50, 50, 50);
-        //drawSpeedometer();
+        drawSpeedometer(530, 370);
+        drawSpeedNumber(545, 400, 25, 25);
         y += speed;
         if (y > BasicGame.screenHeight) {
             y -= height;
