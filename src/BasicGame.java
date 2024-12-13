@@ -3,9 +3,7 @@ import nl.saxion.app.interaction.GameLoop;
 import nl.saxion.app.interaction.KeyboardEvent;
 import nl.saxion.app.interaction.MouseEvent;
 
-
 import java.awt.*;
-import java.text.CollationKey;
 
 public class BasicGame implements GameLoop {
 
@@ -18,7 +16,9 @@ public class BasicGame implements GameLoop {
     public static void main(String[] args) {
         SaxionApp.startGameLoop(new BasicGame(), screenWidth, screenHeight, 1000 / FPS);
     }
-
+    String currentScreen = "startscreen";
+    Rectangle startButtonBounds;
+    //Rectangle leaderboardButtonBounds; Nog niet geïmplementeerd
     Player player = new Player();
     Track track = new Track();
     SpawnObjects spawn = new SpawnObjects();
@@ -37,6 +37,8 @@ public class BasicGame implements GameLoop {
     public void init() {
         Sfx.backgroundsound();
 
+        startButtonBounds = new Rectangle(224, 300, 225, 105);
+
         for (int j = 0; j < 3; j++) {
             Coin firstCoin = new Coin(10, initY, 70, 70, 1);
             initY -= 55;
@@ -51,6 +53,27 @@ public class BasicGame implements GameLoop {
 
     @Override
     public void loop() {
+        if (currentScreen.equals("startscreen")) {
+            startScreenLoop();
+        } else {
+            gameScreenLoop();
+        }
+
+    }
+
+    public void startScreenLoop(){
+        SaxionApp.clear();
+
+        SaxionApp.setBorderColor(Color.red);
+        SaxionApp.drawRectangle(startButtonBounds.x, startButtonBounds.y, startButtonBounds.width, startButtonBounds.height);
+        SaxionApp.drawImage("resource/Startscherm placeholder.png", 0, 0, 670, 780);
+
+
+
+    }
+
+    public void gameScreenLoop(){
+
         SaxionApp.clear();
 
         frames++;
@@ -111,11 +134,11 @@ public class BasicGame implements GameLoop {
         } else {
             track.speed = normalTrackSpeed;
         }
+
     }
 
     @Override
     public void keyboardEvent(KeyboardEvent keyboardEvent) {
-
         //toeter methode
 
         Sfx.toeter(keyboardEvent);
@@ -152,12 +175,26 @@ public class BasicGame implements GameLoop {
                 player.rightPressed = false;
             }
         }
+
     }
+
 
     @Override
     public void mouseEvent(MouseEvent mouseEvent) {
+        if (currentScreen.equals("startscreen")){
+            if (mouseEvent.isLeftMouseButton()){
+                int mouseX = mouseEvent.getX();
+                int mouseY = mouseEvent.getY();
+
+                if (startButtonBounds.contains(mouseX, mouseY)){
+                    System.out.println("Start button clicked!");
+                    currentScreen = "gamescreen";
+                }
+            }
+        }
 
     }
+    
 
     public void updatePlayerBoundingBox() {
         player.boundingBox.x = player.x;
