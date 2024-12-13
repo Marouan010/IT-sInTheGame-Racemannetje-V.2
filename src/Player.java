@@ -16,6 +16,10 @@ public class Player {
     int speed = 10; // snelheid van links en rechts bewegen
     Rectangle boundingBox = new Rectangle();
 
+    // Stats
+    int collectedCoins = 0;
+    int carsPassed = 0;
+
     // Fuel gauge
     int maxFuel = 2500;
     volatile int fuel = maxFuel;

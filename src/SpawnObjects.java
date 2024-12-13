@@ -43,10 +43,6 @@ public class SpawnObjects {
 
                 spawnedObjects.get(j).hasSpawned = true;
             }
-
-            if (spawnedObjects.get(0).y > BasicGame.screenHeight) {
-                spawnedObjects.remove(0);
-            }
         }
     }
 
