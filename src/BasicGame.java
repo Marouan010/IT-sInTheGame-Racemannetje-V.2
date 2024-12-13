@@ -29,8 +29,6 @@ public class BasicGame implements GameLoop {
     int normalTrackSpeed = track.speed;
     double slowTrackSpeed = track.speed * 0.5;
 
-    int collectedCoins = 0;
-
     @Override
     public void init() {
         Sfx.backgroundsound();
@@ -109,14 +107,18 @@ public class BasicGame implements GameLoop {
             SaxionApp.drawImage(spawn.spawnedObjects.get(i).carType, spawn.spawnedObjects.get(i).x, spawn.spawnedObjects.get(i).y, spawn.spawnedObjects.get(i).width, spawn.spawnedObjects.get(i).height);
             spawn.spawnedObjects.get(i).y = spawn.spawnedObjects.get(i).y - spawn.spawnedObjects.get(i).speed + track.speed;
 
-
+            if (spawn.spawnedObjects.get(0).y > BasicGame.screenHeight) {
+                spawn.spawnedObjects.remove(0);
+                player.carsPassed++;
+            }
         } // update objects
         player.draw();
 
         checkForCollisions();
 
         SaxionApp.drawImage("resource/punten 300-200.png", 310, -50);
-        SaxionApp.drawText(String.valueOf(collectedCoins), 435, 30, 50); // coins collected
+        SaxionApp.drawText(String.valueOf(player.collectedCoins), 435, 30, 50); // coins collected
+        SaxionApp.drawText(String.valueOf(player.carsPassed), 10, 718, 50); // cars passed
 
 
         String currentTime = timer.getTime();
@@ -214,7 +216,7 @@ public class BasicGame implements GameLoop {
 
             if (player.boundingBox.intersects(spawn.spawnedCoins.get(i).boundingBox)) {
                 spawn.spawnedCoins.remove(i);
-                collectedCoins++;
+                player.collectedCoins++;
             }
         }
     }
@@ -223,8 +225,8 @@ public class BasicGame implements GameLoop {
         for (int j = 0; j < spawn.spawnedObjects.size(); j++) {
             spawn.spawnedObjects.get(j).boundingBox.x = spawn.spawnedObjects.get(j).x;
             spawn.spawnedObjects.get(j).boundingBox.y = spawn.spawnedObjects.get(j).y;
-            spawn.spawnedObjects.get(j).boundingBox.width = spawn.spawnedObjects.get(j).width;
-            spawn.spawnedObjects.get(j).boundingBox.height = spawn.spawnedObjects.get(j).height;
+            spawn.spawnedObjects.get(j).boundingBox.width = spawn.spawnedObjects.get(j).width - 5;
+            spawn.spawnedObjects.get(j).boundingBox.height = spawn.spawnedObjects.get(j).height - 10;
             // maak hier wijzigingen aan de hitboxen van de autos
 
             if (player.boundingBox.intersects(spawn.spawnedObjects.get(j).boundingBox)) {
