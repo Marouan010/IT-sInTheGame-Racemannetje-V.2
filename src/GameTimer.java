@@ -1,24 +1,30 @@
-public class GameTimer {
-    private int beginFrames;
-    private int fps;
-    private boolean timerRunning;
+import java.util.Timer;
+import java.util.TimerTask;
 
-    public GameTimer(int fps){
-        this.fps = fps;
-        this.beginFrames = 0;
-        this.timerRunning = true;
-    }
+public class GameTimer {
+    Timer timer = new Timer();
+    private int totalSeconds = 0;
+    private boolean timerRunning;
+    private boolean taskCompleted = false;
 
     public void timerStop(){
         timerRunning = false;
     }
 
     public void updateTimer(){
-        beginFrames++;
+        if (!taskCompleted) {
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    totalSeconds++;
+                    taskCompleted = false;
+                }
+            }, 1000);
+            taskCompleted = true;
+        }
     }
 
     public String getTime() {
-        int totalSeconds = beginFrames / fps;
         int minutes = totalSeconds / 60;
         int seconds = totalSeconds % 60;
         return String.format("%02d:%02d", minutes, seconds);

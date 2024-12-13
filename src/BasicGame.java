@@ -11,7 +11,7 @@ public class BasicGame implements GameLoop {
     public static final int screenHeight = 780;
     public static final int FPS = 90;
     public static int frames = 0;
-    GameTimer timer = new GameTimer(FPS);
+    GameTimer timer = new GameTimer();
 
     public static void main(String[] args) {
         SaxionApp.startGameLoop(new BasicGame(), screenWidth, screenHeight, 1000 / FPS);
@@ -120,7 +120,7 @@ public class BasicGame implements GameLoop {
             if (!debounce && spawn.minDistance > 0) {
                 spawn.minDistance -= 50;
                 debounce = true;
-                difficultyIncreaseTimer += difficultyIncreaseTimer;
+                difficultyIncreaseTimer += 2;
                 track.newTrack = true;
             }
         } else {

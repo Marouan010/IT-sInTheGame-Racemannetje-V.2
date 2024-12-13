@@ -4,7 +4,7 @@ public class Track {
     String[] tracks = {
             "resource/baan stil.png",
             "resource/baan1 stil.png",
-            "resource/baan2 stil.png"
+            "resource/baan2 stil.png",
     };
 
     int trackNumber = 0;
