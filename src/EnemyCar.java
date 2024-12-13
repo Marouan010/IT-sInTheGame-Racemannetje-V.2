@@ -35,7 +35,11 @@ public class EnemyCar {
             this.speed = SaxionApp.getRandomValueBetween(5, 7);
         } else if (carTrack == 3) {
             this.x = 293;
-            this.speed = SaxionApp.getRandomValueBetween(4, 6);
+            int randomTrack = SaxionApp.getRandomValueBetween(3, 6);
+            while (randomTrack == 4) {
+                randomTrack = SaxionApp.getRandomValueBetween(3, 6);
+            }
+            this.speed = randomTrack;
         } else if (carTrack == 4) {
             this.x = 379;
             this.speed = SaxionApp.getRandomValueBetween(1, 3);

@@ -29,6 +29,9 @@ public class BasicGame implements GameLoop {
     int normalTrackSpeed = track.speed;
     double slowTrackSpeed = track.speed * 0.5;
 
+    boolean debounce = false;
+    int difficultyIncreaseTimer = 30;
+
     @Override
     public void init() {
         Sfx.backgroundsound();
@@ -113,6 +116,17 @@ public class BasicGame implements GameLoop {
             }
         } // update objects
         player.draw();
+
+        if (timer.getTime().equals(String.format("%02d:%02d", difficultyIncreaseTimer / 60, difficultyIncreaseTimer % 60))) {
+            if (!debounce && spawn.minDistance > 0) {
+                spawn.minDistance -= 50;
+                System.out.println("Min Distance: " + spawn.minDistance);
+                debounce = true;
+                difficultyIncreaseTimer += difficultyIncreaseTimer;
+            }
+        } else {
+            debounce = false;
+        } // Increase Difficulty
 
         checkForCollisions();
 

@@ -13,11 +13,12 @@ public class SpawnObjects {
     int lastObjectTrack = 1;
     int initY = -300;
     int coins = 3;
+    int minDistance = 200;
 
     public void object() {
 
         for (int j = 0; j < spawnedObjects.size(); j++) {
-            if (spawnedObjects.get(j).y >= 200 && spawnedObjects.get(j).y <= 780 && !spawnedObjects.get(j).hasSpawned) {
+            if (spawnedObjects.get(j).y >= minDistance && spawnedObjects.get(j).y <= 780 && !spawnedObjects.get(j).hasSpawned) {
 
                 int randomTrack = SaxionApp.getRandomValueBetween(1, 6);
 
