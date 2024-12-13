@@ -46,7 +46,6 @@ public class Player {
     boolean leftPressed = false;
     boolean rightPressed = false;
     boolean upPressed = false;
-    boolean downPressed = false;
 
     public void InputCheck() {
         if (leftPressed && x > 135) {
@@ -60,9 +59,6 @@ public class Player {
         if (upPressed) {
             track.speed++;
             decreaseFuelAcceleration();
-        }
-        if (downPressed) {
-            track.speed--;
         }
     }
 

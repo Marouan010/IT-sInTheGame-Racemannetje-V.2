@@ -27,7 +27,6 @@ public class BasicGame implements GameLoop {
 
     double fastTrackSpeed = track.speed * 1.5;
     int normalTrackSpeed = track.speed;
-    double slowTrackSpeed = track.speed * 0.5;
 
     boolean debounce = false;
     int difficultyIncreaseTimer = 30;
@@ -96,11 +95,11 @@ public class BasicGame implements GameLoop {
         track.draw();
         for (int j = 0; j < spawn.spawnedCoins.size(); j++) {
             SaxionApp.drawImage(spawn.spawnedCoins.get(j).coinImage, spawn.spawnedCoins.get(j).x, spawn.spawnedCoins.get(j).y, spawn.spawnedCoins.get(j).width, spawn.spawnedCoins.get(j).height);
-            spawn.spawnedCoins.get(j).y += (track.speed - 4);
+            spawn.spawnedCoins.get(j).y += (track.speed - 3);
         } // update coins
         for (int k = 0; k < spawn.spawnedFuel.size(); k++) {
             SaxionApp.drawImage(spawn.spawnedFuel.get(k).fuelImage, spawn.spawnedFuel.get(k).x - 10, spawn.spawnedFuel.get(k).y, spawn.spawnedFuel.get(k).width, spawn.spawnedFuel.get(k).height);
-            spawn.spawnedFuel.get(k).y += (track.speed - 4);
+            spawn.spawnedFuel.get(k).y += (track.speed - 3);
 
             if (spawn.spawnedFuel.getFirst().y > screenHeight) {
                 spawn.spawnedFuel.removeFirst();
@@ -120,9 +119,9 @@ public class BasicGame implements GameLoop {
         if (timer.getTime().equals(String.format("%02d:%02d", difficultyIncreaseTimer / 60, difficultyIncreaseTimer % 60))) {
             if (!debounce && spawn.minDistance > 0) {
                 spawn.minDistance -= 50;
-                System.out.println("Min Distance: " + spawn.minDistance);
                 debounce = true;
                 difficultyIncreaseTimer += difficultyIncreaseTimer;
+                track.newTrack = true;
             }
         } else {
             debounce = false;
@@ -145,8 +144,6 @@ public class BasicGame implements GameLoop {
 
         if (player.upPressed) {
             track.speed = (int) fastTrackSpeed;
-        } else if (player.downPressed) {
-            track.speed = (int) slowTrackSpeed;
         } else {
             track.speed = normalTrackSpeed;
         }
@@ -165,9 +162,6 @@ public class BasicGame implements GameLoop {
             if (keyboardEvent.getKeyCode() == KeyboardEvent.VK_W || keyboardEvent.getKeyCode() == 38) {
                 player.upPressed = true;
             }
-            if (keyboardEvent.getKeyCode() == KeyboardEvent.VK_S || keyboardEvent.getKeyCode() == 40) {
-                player.downPressed = true;
-            }
             if (keyboardEvent.getKeyCode() == KeyboardEvent.VK_A || keyboardEvent.getKeyCode() == 37) {
                 player.leftPressed = true;
             }
@@ -180,9 +174,6 @@ public class BasicGame implements GameLoop {
         if (!keyboardEvent.isKeyPressed()) {
             if (keyboardEvent.getKeyCode() == KeyboardEvent.VK_W || keyboardEvent.getKeyCode() == 38) {
                 player.upPressed = false;
-            }
-            if (keyboardEvent.getKeyCode() == KeyboardEvent.VK_S || keyboardEvent.getKeyCode() == 40) {
-                player.downPressed = false;
             }
             if (keyboardEvent.getKeyCode() == KeyboardEvent.VK_A || keyboardEvent.getKeyCode() == 37) {
                 player.leftPressed = false;

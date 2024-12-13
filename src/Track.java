@@ -1,9 +1,18 @@
 import nl.saxion.app.SaxionApp;
 
 public class Track {
-    String imageFile = "resource/baan stil.png";
+    String[] tracks = {
+            "resource/baan stil.png",
+            "resource/baan1 stil.png",
+            "resource/baan2 stil.png"
+    };
+
+    int trackNumber = 0;
+    String currentTrack = tracks[trackNumber];
     String fuelBar = "resource/tankbar.png";
     String speedometer = "resource/Speedometer.png";
+
+    boolean newTrack = false;
 
     int speed = 10;
     int x, y = 0;
@@ -19,11 +28,21 @@ public class Track {
     }
 
     public void drawFirst() {
-        SaxionApp.drawImage(imageFile, x, y, width, height);
+        SaxionApp.drawImage(currentTrack, x, y, width, height);
+        if (newTrack && trackNumber != tracks.length -1) {
+            trackNumber++;
+            currentTrack = tracks[trackNumber];
+            newTrack = false;
+        }
     }
 
     public void drawSecond() {
-        SaxionApp.drawImage(imageFile, x, y - height, width, height);
+        SaxionApp.drawImage(currentTrack, x, y - height, width, height);
+        if (newTrack && trackNumber != tracks.length -1) {
+            trackNumber++;
+            currentTrack = tracks[trackNumber];
+            newTrack = false;
+        }
     }
 
     public void drawSpeedNumber(int x, int y, int digitWidth, int digitHeight) {
