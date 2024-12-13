@@ -95,11 +95,11 @@ public class BasicGame implements GameLoop {
         track.draw();
         for (int j = 0; j < spawn.spawnedCoins.size(); j++) {
             SaxionApp.drawImage(spawn.spawnedCoins.get(j).coinImage, spawn.spawnedCoins.get(j).x, spawn.spawnedCoins.get(j).y, spawn.spawnedCoins.get(j).width, spawn.spawnedCoins.get(j).height);
-            spawn.spawnedCoins.get(j).y += (track.speed - 3);
+            spawn.spawnedCoins.get(j).y += (track.speed - 4);
         } // update coins
         for (int k = 0; k < spawn.spawnedFuel.size(); k++) {
             SaxionApp.drawImage(spawn.spawnedFuel.get(k).fuelImage, spawn.spawnedFuel.get(k).x - 10, spawn.spawnedFuel.get(k).y, spawn.spawnedFuel.get(k).width, spawn.spawnedFuel.get(k).height);
-            spawn.spawnedFuel.get(k).y += (track.speed - 3);
+            spawn.spawnedFuel.get(k).y += (track.speed - 4);
 
             if (spawn.spawnedFuel.getFirst().y > screenHeight) {
                 spawn.spawnedFuel.removeFirst();
@@ -228,7 +228,7 @@ public class BasicGame implements GameLoop {
             // maak hier wijzigingen aan de hitboxen van de autos
 
             if (player.boundingBox.intersects(spawn.spawnedObjects.get(j).boundingBox)) {
-//                SaxionApp.stopLoop();
+                SaxionApp.stopLoop();
             }
         }
     }
