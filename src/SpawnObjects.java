@@ -5,16 +5,21 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class SpawnObjects {
+    Player player = BasicGame.player;
+
     ArrayList<EnemyCar> spawnedObjects = new ArrayList<>();
     ArrayList<Coin> spawnedCoins = new ArrayList<>();
     ArrayList<Fuel> spawnedFuel = new ArrayList<>();
+    ArrayList<Powerup> spawnedPowerups = new ArrayList<>();
+
+    boolean powerupSpawned = false;
     int lastObjectTrack = 1;
+    String previousPowerupType = "";
     int initY = -300;
     int coins = 3;
     int minDistance = 200;
 
     public void object() {
-
         for (int j = 0; j < spawnedObjects.size(); j++) {
             if (spawnedObjects.get(j).y >= minDistance && spawnedObjects.get(j).y <= 780 && !spawnedObjects.get(j).hasSpawned) {
 
@@ -77,6 +82,24 @@ public class SpawnObjects {
 
                 Fuel newFuel = new Fuel(10, -200, 80, 80, randomTrack);
                 spawnedFuel.add(newFuel);
+            } else {
+                return;
+            }
+        }
+    }
+
+    public void powerup() {
+        for (int i = -1; i < spawnedPowerups.size(); i++) {
+            if (spawnedPowerups.size() == 0) {
+                int randomTrack = SaxionApp.getRandomValueBetween(1,6);
+
+                Powerup powerup = new Powerup(10, -200, 80, 80, randomTrack);
+
+                while (previousPowerupType.equals(powerup.powerupType)) {
+                    powerup.powerupType = Powerup.powerupList[SaxionApp.getRandomValueBetween(0, Powerup.powerupList.length)];
+                }
+
+                spawnedPowerups.add(powerup);
             } else {
                 return;
             }

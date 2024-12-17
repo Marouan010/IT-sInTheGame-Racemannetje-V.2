@@ -16,7 +16,7 @@ public class EnemyCar {
     int carTrack;
     boolean hasSpawned = false;
     String objectType;
-    String carType = carTypes[SaxionApp.getRandomValueBetween(0,3)];
+    String carType = carTypes[SaxionApp.getRandomValueBetween(0,carTypes.length)];
     Rectangle boundingBox = new Rectangle();
 
 

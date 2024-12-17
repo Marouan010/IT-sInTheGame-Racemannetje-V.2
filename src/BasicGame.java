@@ -19,17 +19,23 @@ public class BasicGame implements GameLoop {
     String currentScreen = "startscreen";
     Rectangle startButtonBounds;
     //Rectangle leaderboardButtonBounds; Nog niet geïmplementeerd
-    Player player = new Player();
+    static Player player = new Player();
     Track track = new Track();
     SpawnObjects spawn = new SpawnObjects();
+    PowerupTimer powerupTimer = new PowerupTimer();
 
     EnemyCar firstCar = new EnemyCar(10, -2000, 65, 140, 1, SaxionApp.getRandomValueBetween(1,6));
 
     double fastTrackSpeed = track.speed * 1.5;
     int normalTrackSpeed = track.speed;
 
-    boolean debounce = false;
+    boolean timerDebounce = false;
+    boolean powerupDebounce = false;
     int difficultyIncreaseTimer = 30;
+
+    static boolean doubleCoins = false;
+    static boolean infiniteFuel = false;
+    static boolean ghost = false;
 
     @Override
     public void init() {
@@ -78,7 +84,10 @@ public class BasicGame implements GameLoop {
 
         frames++;
 
-        player.decreaseFuelAcceleration();
+        if (!infiniteFuel) {
+            player.decreaseFuelAcceleration();
+        }
+
         if (player.fuel == 0) {
             track.speed = 0;
             player.speed = 0;
@@ -88,7 +97,13 @@ public class BasicGame implements GameLoop {
 
         spawn.coin();
         if (player.fuel == player.maxFuel / 2 || player.fuel == player.maxFuel / 4 || player.fuel == player.maxFuel * 3 / 4) {
-            spawn.fuel();
+            if (!infiniteFuel) {
+                spawn.fuel();
+            }
+        }
+        if (player.collectedCoins % 50 == 0 && !powerupDebounce && player.collectedCoins != 0) {
+            spawn.powerup();
+            powerupDebounce = true;
         }
         spawn.object();
 
@@ -114,17 +129,26 @@ public class BasicGame implements GameLoop {
                 player.carsPassed++;
             }
         } // update objects
+        for (int i = 0; i < spawn.spawnedPowerups.size(); i++) {
+            SaxionApp.drawImage(spawn.spawnedPowerups.get(i).powerupType, spawn.spawnedPowerups.get(i).x - 10, spawn.spawnedPowerups.get(i).y, spawn.spawnedPowerups.get(i).width, spawn.spawnedPowerups.get(i).height);
+            spawn.spawnedPowerups.get(i).y += (track.speed - 4);
+
+            if (spawn.spawnedPowerups.getFirst().y > screenHeight) {
+                spawn.spawnedPowerups.removeFirst();
+                powerupDebounce = false;
+            }
+        } // update powerups
         player.draw();
 
         if (timer.getTime().equals(String.format("%02d:%02d", difficultyIncreaseTimer / 60, difficultyIncreaseTimer % 60))) {
-            if (!debounce && spawn.minDistance > 0) {
+            if (!timerDebounce && spawn.minDistance > 0) {
                 spawn.minDistance -= 50;
-                debounce = true;
+                timerDebounce = true;
                 difficultyIncreaseTimer += 30;
                 track.newTrack = true;
             }
         } else {
-            debounce = false;
+            timerDebounce = false;
         } // Increase Difficulty
 
         checkForCollisions();
@@ -201,7 +225,6 @@ public class BasicGame implements GameLoop {
         }
 
     }
-    
 
     public void updatePlayerBoundingBox() {
         player.boundingBox.x = player.x + 10;
@@ -221,7 +244,11 @@ public class BasicGame implements GameLoop {
 
             if (player.boundingBox.intersects(spawn.spawnedCoins.get(i).boundingBox)) {
                 spawn.spawnedCoins.remove(i);
-                player.collectedCoins++;
+                if (doubleCoins) {
+                    player.collectedCoins+= 2;
+                } else {
+                    player.collectedCoins++;
+                }
             }
         }
     }
@@ -234,7 +261,7 @@ public class BasicGame implements GameLoop {
             spawn.spawnedObjects.get(j).boundingBox.height = spawn.spawnedObjects.get(j).height - 10;
             // maak hier wijzigingen aan de hitboxen van de autos
 
-            if (player.boundingBox.intersects(spawn.spawnedObjects.get(j).boundingBox)) {
+            if (player.boundingBox.intersects(spawn.spawnedObjects.get(j).boundingBox) && !ghost) {
                 resetGame();
             }
         }
@@ -254,11 +281,35 @@ public class BasicGame implements GameLoop {
         }
     }
 
+    public void updatePowerupBoundingBox() {
+        for (int i = 0; i < spawn.spawnedPowerups.size(); i++) {
+            spawn.spawnedPowerups.get(i).boundingBox.x = spawn.spawnedPowerups.get(i).x;
+            spawn.spawnedPowerups.get(i).boundingBox.y = spawn.spawnedPowerups.get(i).y;
+            spawn.spawnedPowerups.get(i).boundingBox.width = spawn.spawnedPowerups.get(i).width;
+            spawn.spawnedPowerups.get(i).boundingBox.height = spawn.spawnedPowerups.get(i).height;
+
+            if (player.boundingBox.intersects(spawn.spawnedPowerups.get(i).boundingBox)) {
+                if (spawn.spawnedPowerups.get(i).powerupType == Powerup.powerupList[0]) {
+                    doubleCoins = true;
+                } else if (spawn.spawnedPowerups.get(i).powerupType == Powerup.powerupList[1]) {
+                    infiniteFuel = true;
+                    player.fuel = player.maxFuel;
+                } else if (spawn.spawnedPowerups.get(i).powerupType == Powerup.powerupList[2]) {
+                    ghost = true;
+                }
+                powerupTimer.startPowerUpTimer(spawn.spawnedPowerups.get(i));
+                spawn.spawnedPowerups.remove(spawn.spawnedPowerups.get(i));
+                powerupDebounce = false;
+            }
+        }
+    }
+
     public void checkForCollisions() {
         updatePlayerBoundingBox();
         updateCoinBoundingBox();
         updateObjectBoundingBox();
         updateFuelBoundingBox();
+        updatePowerupBoundingBox();
     }
 
     public void resetGame() {
@@ -268,10 +319,12 @@ public class BasicGame implements GameLoop {
         player = new Player();
         track = new Track();
         spawn = new SpawnObjects();
+        powerupTimer = new PowerupTimer();
 
         firstCar = new EnemyCar(10, -2000, 65, 140, 1, SaxionApp.getRandomValueBetween(1,6));
 
-        debounce = false;
+        timerDebounce = false;
+        powerupDebounce = false;
 
         startButtonBounds = new Rectangle(224, 300, 225, 105);
 
