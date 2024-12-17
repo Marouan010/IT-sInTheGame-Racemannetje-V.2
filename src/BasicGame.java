@@ -4,6 +4,8 @@ import nl.saxion.app.interaction.KeyboardEvent;
 import nl.saxion.app.interaction.MouseEvent;
 
 import java.awt.*;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class BasicGame implements GameLoop {
 
@@ -22,7 +24,6 @@ public class BasicGame implements GameLoop {
     static Player player = new Player();
     Track track = new Track();
     SpawnObjects spawn = new SpawnObjects();
-    PowerupTimer powerupTimer = new PowerupTimer();
 
     EnemyCar firstCar = new EnemyCar(10, -2000, 65, 140, 1, SaxionApp.getRandomValueBetween(1,6));
 
@@ -192,7 +193,15 @@ public class BasicGame implements GameLoop {
             if (keyboardEvent.getKeyCode() == KeyboardEvent.VK_D || keyboardEvent.getKeyCode() == 39) {
                 player.rightPressed = true;
             }
-
+            if (keyboardEvent.getKeyCode() == keyboardEvent.VK_3) {
+                doubleCoins = !doubleCoins;
+            }
+            if (keyboardEvent.getKeyCode() == keyboardEvent.VK_2) {
+                infiniteFuel = !infiniteFuel;
+            }
+            if (keyboardEvent.getKeyCode() == keyboardEvent.VK_1) {
+                ghost = !ghost;
+            }
         }
 
         if (!keyboardEvent.isKeyPressed()) {
@@ -297,7 +306,7 @@ public class BasicGame implements GameLoop {
                 } else if (spawn.spawnedPowerups.get(i).powerupType == Powerup.powerupList[2]) {
                     ghost = true;
                 }
-                powerupTimer.startPowerUpTimer(spawn.spawnedPowerups.get(i));
+                startPowerupTimer(spawn.spawnedPowerups.get(i));
                 spawn.spawnedPowerups.remove(spawn.spawnedPowerups.get(i));
                 powerupDebounce = false;
             }
@@ -312,6 +321,22 @@ public class BasicGame implements GameLoop {
         updatePowerupBoundingBox();
     }
 
+    public void startPowerupTimer(Powerup p) {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (p.powerupType.equals(Powerup.powerupList[0])) {
+                    BasicGame.doubleCoins = false;
+                } else if (p.powerupType.equals(Powerup.powerupList[1])) {
+                    BasicGame.infiniteFuel = false;
+                } else if (p.powerupType.equals(Powerup.powerupList[2])) {
+                    BasicGame.ghost = false;
+                }
+            }
+        }, 10000);
+    }
+
     public void resetGame() {
         currentScreen = "startscreen";
 
@@ -319,12 +344,15 @@ public class BasicGame implements GameLoop {
         player = new Player();
         track = new Track();
         spawn = new SpawnObjects();
-        powerupTimer = new PowerupTimer();
 
         firstCar = new EnemyCar(10, -2000, 65, 140, 1, SaxionApp.getRandomValueBetween(1,6));
 
         timerDebounce = false;
         powerupDebounce = false;
+
+        doubleCoins = false;
+        infiniteFuel = false;
+        ghost = false;
 
         startButtonBounds = new Rectangle(224, 300, 225, 105);
 
