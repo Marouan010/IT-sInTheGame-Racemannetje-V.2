@@ -11,6 +11,10 @@ public class GameTimer {
         timerRunning = false;
     }
 
+    public void resetTimer() {
+        totalSeconds = 0;
+    }
+
     public void updateTimer(){
         if (!taskCompleted) {
             timer.schedule(new TimerTask() {

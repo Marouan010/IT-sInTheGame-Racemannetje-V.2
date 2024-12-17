@@ -5,8 +5,6 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class SpawnObjects {
-    Player player = new Player();
-
     ArrayList<EnemyCar> spawnedObjects = new ArrayList<>();
     ArrayList<Coin> spawnedCoins = new ArrayList<>();
     ArrayList<Fuel> spawnedFuel = new ArrayList<>();
@@ -30,6 +28,7 @@ public class SpawnObjects {
 
                 if (randomObject == 1) {
                     EnemyCar cone = new EnemyCar(10, -300, 42, 42, 0, randomTrack);
+                    cone.carType = "cone";
                     cone.speed = 3;
                     cone.carType = "resource/cone 42-42.png";
                     cone.x+= 12;

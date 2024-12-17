@@ -99,7 +99,7 @@ public class BasicGame implements GameLoop {
         } // update coins
         for (int k = 0; k < spawn.spawnedFuel.size(); k++) {
             SaxionApp.drawImage(spawn.spawnedFuel.get(k).fuelImage, spawn.spawnedFuel.get(k).x - 10, spawn.spawnedFuel.get(k).y, spawn.spawnedFuel.get(k).width, spawn.spawnedFuel.get(k).height);
-            spawn.spawnedFuel.get(k).y += (track.speed - 3);
+            spawn.spawnedFuel.get(k).y += (track.speed - 4);
 
             if (spawn.spawnedFuel.getFirst().y > screenHeight) {
                 spawn.spawnedFuel.removeFirst();
@@ -120,7 +120,7 @@ public class BasicGame implements GameLoop {
             if (!debounce && spawn.minDistance > 0) {
                 spawn.minDistance -= 50;
                 debounce = true;
-                difficultyIncreaseTimer += 2;
+                difficultyIncreaseTimer += 30;
                 track.newTrack = true;
             }
         } else {
@@ -204,10 +204,10 @@ public class BasicGame implements GameLoop {
     
 
     public void updatePlayerBoundingBox() {
-        player.boundingBox.x = player.x + 7;
-        player.boundingBox.y = player.y + 15;
-        player.boundingBox.width = player.width - 14;
-        player.boundingBox.height = player.height - 30;
+        player.boundingBox.x = player.x + 10;
+        player.boundingBox.y = player.y + 20;
+        player.boundingBox.width = player.width - 20;
+        player.boundingBox.height = player.height - 50;
 
         // maak hier wijzigingen aan de hitbox van de speler auto
     }
@@ -235,7 +235,7 @@ public class BasicGame implements GameLoop {
             // maak hier wijzigingen aan de hitboxen van de autos
 
             if (player.boundingBox.intersects(spawn.spawnedObjects.get(j).boundingBox)) {
-                SaxionApp.stopLoop();
+                resetGame();
             }
         }
     }
@@ -259,5 +259,32 @@ public class BasicGame implements GameLoop {
         updateCoinBoundingBox();
         updateObjectBoundingBox();
         updateFuelBoundingBox();
+    }
+
+    public void resetGame() {
+        currentScreen = "startscreen";
+
+        timer.resetTimer();
+        player = new Player();
+        track = new Track();
+        spawn = new SpawnObjects();
+
+        firstCar = new EnemyCar(10, -2000, 65, 140, 1, SaxionApp.getRandomValueBetween(1,6));
+
+        debounce = false;
+
+        startButtonBounds = new Rectangle(224, 300, 225, 105);
+
+        int randomTrack = SaxionApp.getRandomValueBetween(1,6);
+        int initY = -1000;
+        for (int j = 0; j < 3; j++) {
+            Coin firstCoin = new Coin(10, initY, 70, 70, randomTrack);
+            initY -= 55;
+            spawn.spawnedCoins.add(firstCoin);
+            SaxionApp.drawImage("resource/coin 70-70.png", firstCoin.x, firstCoin.y, firstCoin.width, firstCoin.height);
+        }
+
+        spawn.spawnedObjects.add(firstCar);
+        SaxionApp.drawImage("resource/auto.png", firstCar.x, firstCar.y, firstCar.width, firstCar.height);
     }
 }
