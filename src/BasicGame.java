@@ -22,7 +22,7 @@ public class BasicGame implements GameLoop {
     Rectangle startButtonBounds;
     //Rectangle leaderboardButtonBounds; Nog niet geïmplementeerd
     static Player player = new Player();
-    Track track = new Track();
+    static Track track = new Track();
     SpawnObjects spawn = new SpawnObjects();
 
     EnemyCar firstCar = new EnemyCar(10, -2000, 65, 140, 1, SaxionApp.getRandomValueBetween(1,6));
@@ -33,6 +33,12 @@ public class BasicGame implements GameLoop {
     boolean timerDebounce = false;
     boolean powerupDebounce = false;
     int difficultyIncreaseTimer = 30;
+
+    int deathScreenX = -screenWidth;
+    int deathScreenSpeed = 10;
+    boolean deathScreenArrived = false;
+
+    boolean gameOver = false;
 
     static boolean doubleCoins = false;
     static boolean infiniteFuel = false;
@@ -62,8 +68,11 @@ public class BasicGame implements GameLoop {
     public void loop() {
         if (currentScreen.equals("startscreen")) {
             startScreenLoop();
-        } else {
+        } else if (currentScreen.equals("gamescreen")) {
             gameScreenLoop();
+        } else if (currentScreen.equals("deathscreen")) {
+            deathScreenLoop();
+
         }
 
     }
@@ -77,6 +86,30 @@ public class BasicGame implements GameLoop {
 
 
 
+    }
+
+    public void deathScreenLoop() {
+
+
+        if (deathScreenX < 0) {
+            deathScreenX += deathScreenSpeed;
+            if (deathScreenX >= 0) {
+                deathScreenX = 0;
+                deathScreenArrived = true;
+            }
+        }
+
+
+
+        SaxionApp.drawImage("resource/Wasted.png", deathScreenX, 0, screenWidth, screenHeight);
+
+        if (deathScreenArrived) {
+
+            SaxionApp.drawText(timer.getTime(), 470, 450, 65);
+            SaxionApp.drawText(String.valueOf(player.collectedCoins), 518, 556, 65);
+            SaxionApp.drawText(String.valueOf(player.carsPassed), 420, 660, 65);
+            SaxionApp.stopLoop();
+        }
     }
 
     public void gameScreenLoop(){
@@ -93,6 +126,8 @@ public class BasicGame implements GameLoop {
             track.speed = 0;
             player.speed = 0;
             timer.timerStop();
+            deathScreenLoop();
+            currentScreen.equals("deathscreen");
         } else
             timer.updateTimer();
 
@@ -154,18 +189,20 @@ public class BasicGame implements GameLoop {
 
         checkForCollisions();
 
-        SaxionApp.drawImage("resource/punten 300-200.png", 310, -50);
-        SaxionApp.drawText(String.valueOf(player.collectedCoins), 435, 30, 50); // coins collected
-        SaxionApp.drawText(String.valueOf(player.carsPassed), 10, 718, 50); // cars passed
+        if (currentScreen.equals("gamescreen")) {
+
+            SaxionApp.drawImage("resource/punten 300-200.png", 310, -50);
+            SaxionApp.drawText(String.valueOf(player.collectedCoins), 435, 30, 50); // coins collected
+            SaxionApp.drawText(String.valueOf(player.carsPassed), 10, 718, 50); // cars passed
 
 
-        String currentTime = timer.getTime();
-        SaxionApp.drawImage("resource/afstand 300-200.png", 50, -50); //Heb de afstand foto gebruikt, maar moet nog vervangen worden
-        SaxionApp.drawText(" " + currentTime, 165, 35, 40);
+            String currentTime = timer.getTime();
+            SaxionApp.drawImage("resource/afstand 300-200.png", 50, -50); //Heb de afstand foto gebruikt, maar moet nog vervangen worden
+            SaxionApp.drawText(" " + currentTime, 165, 35, 40);
 
 
-
-        SaxionApp.drawText(String.valueOf(track.speed), 300, 30, 50); // trackspeed debug
+            SaxionApp.drawText(String.valueOf(track.speed), 300, 30, 50); // trackspeed debug
+        }
 
         if (player.upPressed) {
             track.speed = (int) fastTrackSpeed;
@@ -227,7 +264,7 @@ public class BasicGame implements GameLoop {
                 int mouseY = mouseEvent.getY();
 
                 if (startButtonBounds.contains(mouseX, mouseY)){
-                    System.out.println("Start button clicked!");
+                    System.out.println("Start button clicked!"); //debug
                     currentScreen = "gamescreen";
                 }
             }
@@ -268,10 +305,13 @@ public class BasicGame implements GameLoop {
             spawn.spawnedObjects.get(j).boundingBox.y = spawn.spawnedObjects.get(j).y;
             spawn.spawnedObjects.get(j).boundingBox.width = spawn.spawnedObjects.get(j).width - 5;
             spawn.spawnedObjects.get(j).boundingBox.height = spawn.spawnedObjects.get(j).height - 10;
-            // maak hier wijzigingen aan de hitboxen van de autos
+            // maak hier wijzigingen aan de hitboxen van de autotr
 
             if (player.boundingBox.intersects(spawn.spawnedObjects.get(j).boundingBox) && !ghost) {
-                resetGame();
+                currentScreen.equals("deathscreen");
+               deathScreenLoop();
+
+               // resetGame();
             }
         }
     }

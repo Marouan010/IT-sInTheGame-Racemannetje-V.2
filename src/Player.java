@@ -64,7 +64,7 @@ public class Player {
 
     // Decreases your fuel faster
     public void decreaseFuelAcceleration() {
-        if (fuel > 0 && !BasicGame.infiniteFuel) {
+        if (fuel > 0) {
             fuel -= drainSpeed;
         }
     }
@@ -97,11 +97,11 @@ public class Player {
 
     public void draw() {
         InputCheck();
-        if (BasicGame.ghost) {
-            imageFile = "resource/auto me ghost.png";
-        } else {
-            imageFile = "resource/auto me.png";
-        }
+//        if (BasicGame) {
+//            imageFile = "resource/auto me ghost.png";
+//        } else {
+//            imageFile = "resource/auto me.png";
+//        }
         SaxionApp.drawImage(imageFile, x, y, width, height);
         drawFuelGauge();
         drawFuelIcon();
