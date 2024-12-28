@@ -69,12 +69,15 @@ public class Track {
         drawFirst();
         drawSecond();
         drawFuelBar();
-        drawSpeedometer(530, 370);
-        drawSpeedNumber(545, 400, 25, 25);
         y += speed;
         if (y > BasicGame.screenHeight) {
             y -= height;
         }
+    }
+
+    public void drawSpeedometer(){
+        drawSpeedometer(530, 370);
+        drawSpeedNumber(545, 400, 25, 25);
     }
 
 
