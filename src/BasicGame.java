@@ -332,7 +332,7 @@ public class BasicGame implements GameLoop {
 
             if (player.boundingBox.intersects(spawn.spawnedFuel.get(k).boundingBox)) {
                 spawn.spawnedFuel.remove(spawn.spawnedFuel.get(k));
-                player.fuel = player.maxFuel; // verander hier hoeveel fuel erbij moet komen
+                player.fuel = player.maxFuel;
             }
         }
     }
