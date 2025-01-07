@@ -148,7 +148,6 @@ public class BasicGame implements GameLoop {
         spawn.object();
 
         track.draw();
-        track.drawSpeedometer();
         for (int j = 0; j < spawn.spawnedCoins.size(); j++) {
             SaxionApp.drawImage(spawn.spawnedCoins.get(j).coinImage, spawn.spawnedCoins.get(j).x, spawn.spawnedCoins.get(j).y, spawn.spawnedCoins.get(j).width, spawn.spawnedCoins.get(j).height);
             spawn.spawnedCoins.get(j).y += (track.speed - 3);
@@ -213,8 +212,10 @@ public class BasicGame implements GameLoop {
 
         if (player.upPressed) {
             track.speed = (int) fastTrackSpeed;
+            track.updateSpeed(true);
         } else {
             track.speed = normalTrackSpeed;
+            track.updateSpeed(false);
         }
 
     }
