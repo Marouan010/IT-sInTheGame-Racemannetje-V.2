@@ -34,6 +34,7 @@ public class BasicGame implements GameLoop {
     boolean timerDebounce = false;
     boolean powerupDebounce = false;
     int difficultyIncreaseTimer = 30;
+    boolean gameOver = false;
 
 //    int deathScreenX = -screenWidth;
 //    int deathScreenSpeed = 10;
@@ -67,13 +68,10 @@ public class BasicGame implements GameLoop {
 
     @Override
     public void loop() {
-        if (currentScreen.equals("startscreen")) {
-            startScreenLoop();
-        } else if (currentScreen.equals("gamescreen")) {
-            gameScreenLoop();
-        } else if (currentScreen.equals("deathscreen")) {
-            deathScreenLoop();
-
+        switch (currentScreen) {
+            case "startscreen" -> startScreenLoop();
+            case "gamescreen" -> gameScreenLoop();
+            case "deathscreen" -> deathScreenLoop();
         }
 
     }
@@ -90,27 +88,36 @@ public class BasicGame implements GameLoop {
 
     public void deathScreenLoop() {
 
-//
-//        if (deathScreenX < 0) {
-//            deathScreenX += deathScreenSpeed;
-//            if (deathScreenX >= 0) {
-//                deathScreenX = 0;
-//                deathScreenArrived = true;
-//            }
-//        }
-
-
-
-
         SaxionApp.drawImage("resource/Wasted.png", 0, 0, screenWidth, screenHeight);
         currentScreen = "deathscreen";
-//
-        SaxionApp.drawText(timer.getTime(), 480, 380, 65);
-        SaxionApp.drawText(String.valueOf(player.collectedCoins), 533, 480, 65);
-        SaxionApp.drawText(String.valueOf(player.carsPassed), 425, 578, 65);
 
-//
+
+        drawNumberAsImages(timer.getTime(), 475, 370, 50, 65);
+        drawNumberAsImages(String.valueOf(player.collectedCoins), 525, 470, 50, 65);
+        drawNumberAsImages(String.valueOf(player.carsPassed), 418, 568, 50, 65);
     }
+
+    public void drawNumberAsImages(String number, int x, int y, int digitWidth, int digitHeight) {
+
+        String[] numberImages = new String[10];
+        for (int i = 0; i <= 9; i++) {
+            numberImages[i] = "resource/Font numbers/" + i + ".png";
+        }
+
+        int currentX = x;
+        int spacing = -17;
+
+        for (char dubbelePunt : number.toCharArray()) {
+            if (dubbelePunt == ':') {
+                SaxionApp.drawImage("resource/Font numbers/font dubbele punt.png", currentX, y, digitWidth, digitHeight);
+            } else {
+                int digit = Character.getNumericValue(dubbelePunt);
+                SaxionApp.drawImage(numberImages[digit], currentX, y, digitWidth, digitHeight);
+            }
+            currentX += digitWidth + spacing;
+        }
+    }
+
 
     public void gameScreenLoop() {
 
@@ -123,9 +130,6 @@ public class BasicGame implements GameLoop {
         }
 
         if (player.fuel == 0) {
-
-            deathScreenLoop();
-            currentScreen = "deathscreen";
 
             track.speed = 0;
             player.speed = 0;
@@ -164,8 +168,8 @@ public class BasicGame implements GameLoop {
             SaxionApp.drawImage(spawn.spawnedObjects.get(i).carType, spawn.spawnedObjects.get(i).x, spawn.spawnedObjects.get(i).y, spawn.spawnedObjects.get(i).width, spawn.spawnedObjects.get(i).height);
             spawn.spawnedObjects.get(i).y = spawn.spawnedObjects.get(i).y - spawn.spawnedObjects.get(i).speed + track.speed;
 
-            if (spawn.spawnedObjects.get(0).y > BasicGame.screenHeight) {
-                spawn.spawnedObjects.remove(0);
+            if (spawn.spawnedObjects.getFirst().y > BasicGame.screenHeight) {
+                spawn.spawnedObjects.removeFirst();
                 player.carsPassed++;
             }
         } // update objects
@@ -224,9 +228,8 @@ public class BasicGame implements GameLoop {
     public void keyboardEvent(KeyboardEvent keyboardEvent) {
         //toeter methode
 
-        Sfx.toeter(keyboardEvent);
-        Sfx.remmen(keyboardEvent);
-
+            Sfx.toeter(keyboardEvent);
+            Sfx.remmen(keyboardEvent);
 
         if (keyboardEvent.isKeyPressed()) {
             if (keyboardEvent.getKeyCode() == KeyboardEvent.VK_W || keyboardEvent.getKeyCode() == 38) {
@@ -238,13 +241,13 @@ public class BasicGame implements GameLoop {
             if (keyboardEvent.getKeyCode() == KeyboardEvent.VK_D || keyboardEvent.getKeyCode() == 39) {
                 player.rightPressed = true;
             }
-            if (keyboardEvent.getKeyCode() == keyboardEvent.VK_3) {
+            if (keyboardEvent.getKeyCode() == KeyboardEvent.VK_3) {
                 doubleCoins = !doubleCoins;
             }
-            if (keyboardEvent.getKeyCode() == keyboardEvent.VK_2) {
+            if (keyboardEvent.getKeyCode() == KeyboardEvent.VK_2) {
                 infiniteFuel = !infiniteFuel;
             }
-            if (keyboardEvent.getKeyCode() == keyboardEvent.VK_1) {
+            if (keyboardEvent.getKeyCode() == KeyboardEvent.VK_1) {
                 ghost = !ghost;
             }
         }
@@ -272,7 +275,7 @@ public class BasicGame implements GameLoop {
                 int mouseY = mouseEvent.getY();
 
                 if (startButtonBounds.contains(mouseX, mouseY)) {
-                    System.out.println("Start button clicked!"); //debug
+//                    System.out.println("Start button clicked!"); //debug
                     currentScreen = "gamescreen";
                 }
             }
@@ -315,7 +318,7 @@ public class BasicGame implements GameLoop {
             spawn.spawnedObjects.get(j).boundingBox.height = spawn.spawnedObjects.get(j).height - 10;
             // maak hier wijzigingen aan de hitboxen van de auto
 
-            if (player.boundingBox.intersects(spawn.spawnedObjects.get(j).boundingBox) && !ghost) {
+            if (player.boundingBox.intersects(spawn.spawnedObjects.get(j).boundingBox) && !ghost || player.fuel == 0) {
                 deathScreenLoop();
                 SaxionApp.stopLoop();
 
@@ -346,12 +349,12 @@ public class BasicGame implements GameLoop {
             spawn.spawnedPowerups.get(i).boundingBox.height = spawn.spawnedPowerups.get(i).height;
 
             if (player.boundingBox.intersects(spawn.spawnedPowerups.get(i).boundingBox)) {
-                if (spawn.spawnedPowerups.get(i).powerupType == Powerup.powerupList[0]) {
+                if (spawn.spawnedPowerups.get(i).powerupType.equals(Powerup.powerupList[0])) {
                     doubleCoins = true;
-                } else if (spawn.spawnedPowerups.get(i).powerupType == Powerup.powerupList[1]) {
+                } else if (spawn.spawnedPowerups.get(i).powerupType.equals(Powerup.powerupList[1])) {
                     infiniteFuel = true;
                     player.fuel = player.maxFuel;
-                } else if (spawn.spawnedPowerups.get(i).powerupType == Powerup.powerupList[2]) {
+                } else if (spawn.spawnedPowerups.get(i).powerupType.equals(Powerup.powerupList[2])) {
                     ghost = true;
                 }
                 startPowerupTimer(spawn.spawnedPowerups.get(i));
