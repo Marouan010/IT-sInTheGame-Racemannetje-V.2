@@ -72,6 +72,7 @@ public class BasicGame implements GameLoop {
             case "startscreen" -> startScreenLoop();
             case "gamescreen" -> gameScreenLoop();
             case "deathscreen" -> deathScreenLoop();
+//            case "resultscreen" -> resultScreenLoop();
         }
 
     }
@@ -96,6 +97,10 @@ public class BasicGame implements GameLoop {
         drawNumberAsImages(String.valueOf(player.collectedCoins), 525, 470, 50, 65);
         drawNumberAsImages(String.valueOf(player.carsPassed), 418, 568, 50, 65);
     }
+
+//    public void resultScreenLoop(){
+//        SaxionApp.clear();
+//    }
 
     public void drawNumberAsImages(String number, int x, int y, int digitWidth, int digitHeight) {
 
@@ -228,8 +233,8 @@ public class BasicGame implements GameLoop {
     public void keyboardEvent(KeyboardEvent keyboardEvent) {
         //toeter methode
 
-            Sfx.toeter(keyboardEvent);
-            Sfx.remmen(keyboardEvent);
+        Sfx.toeter(keyboardEvent);
+        Sfx.remmen(keyboardEvent);
 
         if (keyboardEvent.isKeyPressed()) {
             if (keyboardEvent.getKeyCode() == KeyboardEvent.VK_W || keyboardEvent.getKeyCode() == 38) {
@@ -263,6 +268,11 @@ public class BasicGame implements GameLoop {
                 player.rightPressed = false;
             }
         }
+//        if (keyboardEvent.isKeyPressed() && currentScreen.equals("deathscreen")) {
+//            if (keyboardEvent.getKeyCode() == KeyboardEvent.VK_SPACE) {
+//                currentScreen.equals("resultscreen");
+//            }
+//        }
 
     }
 
@@ -321,6 +331,7 @@ public class BasicGame implements GameLoop {
             if (player.boundingBox.intersects(spawn.spawnedObjects.get(j).boundingBox) && !ghost || player.fuel == 0) {
                 deathScreenLoop();
                 SaxionApp.stopLoop();
+
 
                 // resetGame();
             }
