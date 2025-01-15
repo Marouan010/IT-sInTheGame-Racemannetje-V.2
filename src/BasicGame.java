@@ -46,6 +46,9 @@ public class BasicGame implements GameLoop {
     static boolean infiniteFuel = false;
     static boolean ghost = false;
 
+    String playerName = "";
+    boolean playerNameEntered = false;
+
     @Override
     public void init() {
         Sfx.backgroundsound();
@@ -72,7 +75,6 @@ public class BasicGame implements GameLoop {
             case "startscreen" -> startScreenLoop();
             case "gamescreen" -> gameScreenLoop();
             case "deathscreen" -> deathScreenLoop();
-//            case "resultscreen" -> resultScreenLoop();
         }
 
     }
@@ -89,18 +91,23 @@ public class BasicGame implements GameLoop {
 
     public void deathScreenLoop() {
 
-        SaxionApp.drawImage("resource/Wasted.png", 0, 0, screenWidth, screenHeight);
+        SaxionApp.drawImage("resource/Deathscreen_final.png", 0, 0, screenWidth, screenHeight);
         currentScreen = "deathscreen";
 
 
-        drawNumberAsImages(timer.getTime(), 475, 370, 50, 65);
-        drawNumberAsImages(String.valueOf(player.collectedCoins), 525, 470, 50, 65);
-        drawNumberAsImages(String.valueOf(player.carsPassed), 418, 568, 50, 65);
+        drawNumberAsImages(timer.getTime(), 475, 302, 50, 65);
+        drawNumberAsImages(String.valueOf(player.collectedCoins), 525, 402, 50, 65);
+        drawNumberAsImages(String.valueOf(player.carsPassed), 418, 500, 50, 65);
+
+        SaxionApp.drawText(playerName, 120, 675, 40);
+
+        if (playerNameEntered){
+            //CSV functionality
+        }
+
+
     }
 
-//    public void resultScreenLoop(){
-//        SaxionApp.clear();
-//    }
 
     public void drawNumberAsImages(String number, int x, int y, int digitWidth, int digitHeight) {
 
@@ -268,11 +275,24 @@ public class BasicGame implements GameLoop {
                 player.rightPressed = false;
             }
         }
-//        if (keyboardEvent.isKeyPressed() && currentScreen.equals("deathscreen")) {
-//            if (keyboardEvent.getKeyCode() == KeyboardEvent.VK_SPACE) {
-//                currentScreen.equals("resultscreen");
-//            }
-//        }
+
+
+        if (currentScreen.equals("deathscreen")) {
+            if (keyboardEvent.isKeyPressed()) {
+                char key = (char) keyboardEvent.getKeyCode();
+
+                if (Character.isLetterOrDigit(key) && playerName.length() < 14) {
+                    playerName += key;
+                }
+                if (keyboardEvent.getKeyCode() == KeyboardEvent.VK_BACK_SPACE && !playerName.isEmpty()) {
+                    playerName = playerName.substring(0, playerName.length() - 1);
+                }
+                if (keyboardEvent.getKeyCode() == KeyboardEvent.VK_ENTER && !playerName.isEmpty()) {
+                    playerNameEntered = true;
+                }
+            }
+        }
+
 
     }
 
@@ -329,8 +349,11 @@ public class BasicGame implements GameLoop {
             // maak hier wijzigingen aan de hitboxen van de auto
 
             if (player.boundingBox.intersects(spawn.spawnedObjects.get(j).boundingBox) && !ghost || player.fuel == 0) {
-                deathScreenLoop();
-                SaxionApp.stopLoop();
+                currentScreen = "deathscreen";
+                track.speed = 0;
+                player.speed = 0;
+                timer.timerStop();
+
 
 
                 // resetGame();
