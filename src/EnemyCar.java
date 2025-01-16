@@ -4,10 +4,13 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class EnemyCar {
-    String[] carTypes = {
-            "resource/auto.png",
-            "resource/auto 3.png",
-            "resource/auto 4.png"
+    static String[][] carTypes = {
+            {"resource/Car Types/auto.png", "resource/Car Types/auto 3.png", "resource/Car Types/auto 4.png"},
+            {"resource/Car Types/auto woestijn.png", "resource/Car Types/auto woestijn 3.png", "resource/Car Types/auto woestijn 4.png"},
+            {"resource/Car Types/auto zee.png", "resource/Car Types/auto zee 3.png", "resource/Car Types/auto zee 4.png"},
+            {"resource/Car Types/auto ijs.png", "resource/Car Types/auto ijs 3.png", "resource/Car Types/auto ijs 4.png"},
+            {"resource/Car Types/auto lava.png", "resource/Car Types/auto lava 3.png", "resource/Car Types/auto lava 4.png"},
+            {"resource/Car Types/auto lucht.png", "resource/Car Types/auto lucht 3.png", "resource/Car Types/auto lucht 4.png"}
     };
 
     int width, height;
@@ -15,8 +18,7 @@ public class EnemyCar {
     int speed;
     int carTrack;
     boolean hasSpawned = false;
-    String objectType;
-    String carType = carTypes[SaxionApp.getRandomValueBetween(0,carTypes.length)];
+    String carType = carTypes[0][SaxionApp.getRandomValueBetween(0,carTypes[0].length)];
     Rectangle boundingBox = new Rectangle();
 
 

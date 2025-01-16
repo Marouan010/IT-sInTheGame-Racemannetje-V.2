@@ -13,7 +13,8 @@ public class BasicGame implements GameLoop {
     public static final int screenHeight = 780;
     public static final int FPS = 90;
     public static int frames = 0;
-    GameTimer timer = new GameTimer();
+    GameTimer gameTimer = new GameTimer();
+    Timer timer = new Timer();
 
     public static void main(String[] args) {
         SaxionApp.startGameLoop(new BasicGame(), screenWidth, screenHeight, 1000 / FPS);
@@ -22,6 +23,15 @@ public class BasicGame implements GameLoop {
     String currentScreen = "startscreen";
     Rectangle startButtonBounds;
     //Rectangle leaderboardButtonBounds; Nog niet geïmplementeerd
+
+    String selectedCard = "";
+    String card1 = "";
+    String card2 = "";
+    String card3 = "";
+    Rectangle card1ButtonBounds;
+    Rectangle card2ButtonBounds;
+    Rectangle card3ButtonBounds;
+
     static Player player = new Player();
     static Track track = new Track();
     SpawnObjects spawn = new SpawnObjects();
@@ -31,20 +41,29 @@ public class BasicGame implements GameLoop {
     double fastTrackSpeed = track.speed * 1.5;
     int normalTrackSpeed = track.speed;
 
+    boolean isCardButtonClickable = false;
+    boolean cardClicked = false;
+    boolean cardScreen = false;
+    boolean drawCardScreenBackdrop = true;
+
     boolean timerDebounce = false;
     boolean powerupDebounce = false;
+    int powerupSpawnThreshold = 50; // 50 coins per powerup spawn
+    int powerupTime = 10000; // 10 seconds
     int difficultyIncreaseTimer = 30;
-    boolean gameOver = false;
 
-//    int deathScreenX = -screenWidth;
-//    int deathScreenSpeed = 10;
-//    boolean deathScreenArrived = false;
-//
-//    boolean gameOver = false;
+    String activatedPowerup = "";
+    boolean powerupInfoShown = false;
 
     static boolean doubleCoins = false;
     static boolean infiniteFuel = false;
     static boolean ghost = false;
+    static boolean energyCoin = false;
+    static boolean shrink = false;
+    static boolean grow = false;
+    static boolean magnet = false;
+
+    boolean fuelSpawnTimerStarted = false;
 
     String playerName = "";
     boolean playerNameEntered = false;
@@ -65,7 +84,7 @@ public class BasicGame implements GameLoop {
         }
 
         spawn.spawnedObjects.add(firstCar);
-        SaxionApp.drawImage("resource/auto.png", firstCar.x, firstCar.y, firstCar.width, firstCar.height);
+        SaxionApp.drawImage("resource/Car Types/auto.png", firstCar.x, firstCar.y, firstCar.width, firstCar.height);
 
     }
 
@@ -73,6 +92,7 @@ public class BasicGame implements GameLoop {
     public void loop() {
         switch (currentScreen) {
             case "startscreen" -> startScreenLoop();
+            case "cardscreen" -> cardScreenLoop();
             case "gamescreen" -> gameScreenLoop();
             case "deathscreen" -> deathScreenLoop();
         }
@@ -95,7 +115,7 @@ public class BasicGame implements GameLoop {
         currentScreen = "deathscreen";
 
 
-        drawNumberAsImages(timer.getTime(), 475, 302, 50, 65);
+        drawNumberAsImages(gameTimer.getTime(), 475, 302, 50, 65);
         drawNumberAsImages(String.valueOf(player.collectedCoins), 525, 402, 50, 65);
         drawNumberAsImages(String.valueOf(player.carsPassed), 418, 500, 50, 65);
 
@@ -132,7 +152,6 @@ public class BasicGame implements GameLoop {
 
 
     public void gameScreenLoop() {
-
         SaxionApp.clear();
 
         frames++;
@@ -141,23 +160,21 @@ public class BasicGame implements GameLoop {
             player.decreaseFuelAcceleration();
         }
 
-        if (player.fuel == 0) {
-
-            track.speed = 0;
-            player.speed = 0;
-            timer.timerStop();
-
-
-        } else
-            timer.updateTimer();
+        gameTimer.updateTimer();
 
         spawn.coin();
-        if (player.fuel == player.maxFuel / 2 || player.fuel == player.maxFuel / 4 || player.fuel == player.maxFuel * 3 / 4) {
-            if (!infiniteFuel) {
-                spawn.fuel();
-            }
+
+        if (!fuelSpawnTimerStarted && !infiniteFuel) {
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    spawn.fuel();
+                    fuelSpawnTimerStarted = false;
+                }
+            }, SaxionApp.getRandomValueBetween(5000, 10000));
+            fuelSpawnTimerStarted = true;
         }
-        if (player.collectedCoins % 50 == 0 && !powerupDebounce && player.collectedCoins != 0) {
+        if (player.collectedCoins % powerupSpawnThreshold == 0 && !powerupDebounce && player.collectedCoins != 0) {
             spawn.powerup();
             powerupDebounce = true;
         }
@@ -194,14 +211,17 @@ public class BasicGame implements GameLoop {
                 powerupDebounce = false;
             }
         } // update powerups
+        if (player.collectedCoins % powerupSpawnThreshold != 0) {
+            powerupDebounce = false;
+        }
         player.draw();
 
-        if (timer.getTime().equals(String.format("%02d:%02d", difficultyIncreaseTimer / 60, difficultyIncreaseTimer % 60))) {
-            if (!timerDebounce && spawn.minDistance > 0) {
-                spawn.minDistance -= 50;
+        if (gameTimer.getTotalSeconds() == difficultyIncreaseTimer) {
+            if (!timerDebounce) {
                 timerDebounce = true;
                 difficultyIncreaseTimer += 30;
                 track.newTrack = true;
+                cardScreen = true;
             }
         } else {
             timerDebounce = false;
@@ -216,13 +236,9 @@ public class BasicGame implements GameLoop {
             SaxionApp.drawText(String.valueOf(player.carsPassed), 10, 718, 50); // cars passed
 
 
-            String currentTime = timer.getTime();
+            String currentTime = gameTimer.getTime();
             SaxionApp.drawImage("resource/afstand 300-200.png", 50, -50); //Heb de afstand foto gebruikt, maar moet nog vervangen worden
             SaxionApp.drawText(" " + currentTime, 165, 35, 40);
-
-
-            SaxionApp.drawText(String.valueOf(track.speed), 300, 30, 50); // trackspeed debug
-
         }
 
 
@@ -234,6 +250,79 @@ public class BasicGame implements GameLoop {
             track.updateSpeed(false);
         }
 
+        if (cardScreen) {
+            currentScreen = "cardscreen";
+            cardScreen = false;
+        }
+
+        if (!activatedPowerup.isEmpty() && !currentScreen.equals("deathscreen")) {
+            SaxionApp.drawImage(activatedPowerup, screenWidth-235, 140, 240, 89);
+            if (!powerupInfoShown) {
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        activatedPowerup = "";
+                        powerupInfoShown = false;
+                    }
+                }, 4500);
+            }
+            powerupInfoShown = true;
+        }
+
+    }
+
+    public void cardScreenLoop() {
+        if (drawCardScreenBackdrop) {
+            SaxionApp.drawImage("resource/blackbackdrop.png", 0, 0, screenWidth, screenHeight);
+            isCardButtonClickable = true;
+            drawCardScreenBackdrop = false;
+            card1 = DebuffCards.cardList[SaxionApp.getRandomValueBetween(0, DebuffCards.cardList.length)];
+            card2 = DebuffCards.cardList[SaxionApp.getRandomValueBetween(0, DebuffCards.cardList.length)];
+            card3 = DebuffCards.cardList[SaxionApp.getRandomValueBetween(0, DebuffCards.cardList.length)];
+            SaxionApp.drawImage(card1, 50, 260, 160, 275);
+            SaxionApp.drawImage(card2, 250, 260, 160, 275);
+            SaxionApp.drawImage(card3, 450, 260, 160, 275);
+        }
+
+        card1ButtonBounds = new Rectangle();
+        card1ButtonBounds.x = 50;
+        card1ButtonBounds.y = 260;
+        card1ButtonBounds.width = 160;
+        card1ButtonBounds.height = 275;
+
+        card2ButtonBounds = new Rectangle();
+        card2ButtonBounds.x = 250;
+        card2ButtonBounds.y = 260;
+        card2ButtonBounds.width = 160;
+        card2ButtonBounds.height = 275;
+
+        card3ButtonBounds = new Rectangle();
+        card3ButtonBounds.x = 450;
+        card3ButtonBounds.y = 260;
+        card3ButtonBounds.width = 160;
+        card3ButtonBounds.height = 275;
+
+        if (cardClicked) {
+            if (selectedCard.equals(DebuffCards.cardList[0])) {
+                player.normalWidth += 7;
+            } else if (selectedCard.equals(DebuffCards.cardList[1])) {
+                player.drainSpeed *= 2;
+            } else if (selectedCard.equals(DebuffCards.cardList[2])) {
+                powerupSpawnThreshold += 10;
+            } else if (selectedCard.equals(DebuffCards.cardList[3])) {
+                spawn.minDistance -= 50;
+            } else if (selectedCard.equals(DebuffCards.cardList[4])) {
+                if (player.speed > 2) {
+                    player.speed -= 2;
+                }
+            } else if (selectedCard.equals(DebuffCards.cardList[5])) {
+                powerupTime -= 1000;
+            }
+
+            currentScreen = "gamescreen";
+            drawCardScreenBackdrop = true;
+            cardClicked = false;
+        }
     }
 
     @Override
@@ -241,7 +330,6 @@ public class BasicGame implements GameLoop {
         //toeter methode
 
         Sfx.toeter(keyboardEvent);
-        Sfx.remmen(keyboardEvent);
 
         if (keyboardEvent.isKeyPressed()) {
             if (keyboardEvent.getKeyCode() == KeyboardEvent.VK_W || keyboardEvent.getKeyCode() == 38) {
@@ -252,15 +340,6 @@ public class BasicGame implements GameLoop {
             }
             if (keyboardEvent.getKeyCode() == KeyboardEvent.VK_D || keyboardEvent.getKeyCode() == 39) {
                 player.rightPressed = true;
-            }
-            if (keyboardEvent.getKeyCode() == KeyboardEvent.VK_3) {
-                doubleCoins = !doubleCoins;
-            }
-            if (keyboardEvent.getKeyCode() == KeyboardEvent.VK_2) {
-                infiniteFuel = !infiniteFuel;
-            }
-            if (keyboardEvent.getKeyCode() == KeyboardEvent.VK_1) {
-                ghost = !ghost;
             }
         }
 
@@ -278,6 +357,8 @@ public class BasicGame implements GameLoop {
 
 
         if (currentScreen.equals("deathscreen")) {
+            gameTimer.timer.cancel();
+
             if (keyboardEvent.isKeyPressed()) {
                 char key = (char) keyboardEvent.getKeyCode();
 
@@ -309,8 +390,26 @@ public class BasicGame implements GameLoop {
                     currentScreen = "gamescreen";
                 }
             }
-        }
+        } else if (currentScreen.equals("cardscreen")) {
+            if (mouseEvent.isLeftMouseButton()) {
+                int mouseX = mouseEvent.getX();
+                int mouseY = mouseEvent.getY();
 
+                if (card1ButtonBounds.contains(mouseX, mouseY) && isCardButtonClickable) {
+                    selectedCard = card1;
+                    cardClicked = true;
+                    isCardButtonClickable = false;
+                } else if (card2ButtonBounds.contains(mouseX, mouseY) && isCardButtonClickable) {
+                    selectedCard = card2;
+                    cardClicked = true;
+                    isCardButtonClickable = false;
+                } else if (card3ButtonBounds.contains(mouseX, mouseY) && isCardButtonClickable) {
+                    selectedCard = card3;
+                    cardClicked = true;
+                    isCardButtonClickable = false;
+                }
+            }
+        }
     }
 
     public void updatePlayerBoundingBox() {
@@ -329,12 +428,20 @@ public class BasicGame implements GameLoop {
             spawn.spawnedCoins.get(i).boundingBox.width = spawn.spawnedCoins.get(i).width;
             spawn.spawnedCoins.get(i).boundingBox.height = spawn.spawnedCoins.get(i).height;
 
-            if (player.boundingBox.intersects(spawn.spawnedCoins.get(i).boundingBox)) {
+            if (player.boundingBox.intersects(spawn.spawnedCoins.get(i).boundingBox) || magnet && spawn.spawnedCoins.get(i).boundingBox.y > 575) {
                 spawn.spawnedCoins.remove(i);
                 if (doubleCoins) {
                     player.collectedCoins += 2;
                 } else {
                     player.collectedCoins++;
+                }
+
+                if (energyCoin) {
+                    if (player.fuel + 125 > player.maxFuel) {
+                        player.fuel = player.maxFuel;
+                    } else {
+                        player.fuel += 125;
+                    }
                 }
             }
         }
@@ -348,15 +455,15 @@ public class BasicGame implements GameLoop {
             spawn.spawnedObjects.get(j).boundingBox.height = spawn.spawnedObjects.get(j).height - 10;
             // maak hier wijzigingen aan de hitboxen van de auto
 
-            if (player.boundingBox.intersects(spawn.spawnedObjects.get(j).boundingBox) && !ghost || player.fuel == 0) {
-                currentScreen = "deathscreen";
-                track.speed = 0;
-                player.speed = 0;
-                timer.timerStop();
-
-
-
-                // resetGame();
+            if (player.boundingBox.intersects(spawn.spawnedObjects.get(j).boundingBox) || player.fuel == 0) {
+                if (!ghost && !grow) {
+                    currentScreen = "deathscreen";
+                    track.speed = 0;
+                    player.speed = 0;
+                    gameTimer.timerStop();
+                } else if (grow) {
+                    spawn.spawnedObjects.remove(j);
+                }
             }
         }
     }
@@ -370,7 +477,11 @@ public class BasicGame implements GameLoop {
 
             if (player.boundingBox.intersects(spawn.spawnedFuel.get(k).boundingBox)) {
                 spawn.spawnedFuel.remove(spawn.spawnedFuel.get(k));
-                player.fuel = player.maxFuel;
+                if (player.fuel + 1500 > player.maxFuel) {
+                    player.fuel = player.maxFuel;
+                } else {
+                    player.fuel += 1500;
+                }
             }
         }
     }
@@ -385,15 +496,30 @@ public class BasicGame implements GameLoop {
             if (player.boundingBox.intersects(spawn.spawnedPowerups.get(i).boundingBox)) {
                 if (spawn.spawnedPowerups.get(i).powerupType.equals(Powerup.powerupList[0])) {
                     doubleCoins = true;
+                    activatedPowerup = Powerup.infoCards[0];
                 } else if (spawn.spawnedPowerups.get(i).powerupType.equals(Powerup.powerupList[1])) {
                     infiniteFuel = true;
                     player.fuel = player.maxFuel;
+                    activatedPowerup = Powerup.infoCards[1];
                 } else if (spawn.spawnedPowerups.get(i).powerupType.equals(Powerup.powerupList[2])) {
                     ghost = true;
+                    activatedPowerup = Powerup.infoCards[2];
+                } else if (spawn.spawnedPowerups.get(i).powerupType == Powerup.powerupList[3]) {
+                    energyCoin = true;
+                    activatedPowerup = Powerup.infoCards[3];
+                } else if (spawn.spawnedPowerups.get(i).powerupType == Powerup.powerupList[4]) {
+                    shrink = true;
+                    activatedPowerup = Powerup.infoCards[4];
+                } else if (spawn.spawnedPowerups.get(i).powerupType == Powerup.powerupList[5]) {
+                    grow = true;
+                    activatedPowerup = Powerup.infoCards[5];
+                } else if (spawn.spawnedPowerups.get(i).powerupType == Powerup.powerupList[6]) {
+                    magnet = true;
+                    activatedPowerup = Powerup.infoCards[6];
                 }
                 startPowerupTimer(spawn.spawnedPowerups.get(i));
                 spawn.spawnedPowerups.remove(spawn.spawnedPowerups.get(i));
-                powerupDebounce = false;
+                Sfx.powerupPickup();
             }
         }
     }
@@ -407,7 +533,6 @@ public class BasicGame implements GameLoop {
     }
 
     public void startPowerupTimer(Powerup p) {
-        Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -417,15 +542,35 @@ public class BasicGame implements GameLoop {
                     BasicGame.infiniteFuel = false;
                 } else if (p.powerupType.equals(Powerup.powerupList[2])) {
                     BasicGame.ghost = false;
+                } else if (p.powerupType.equals(Powerup.powerupList[3])) {
+                    energyCoin = false;
+                } else if (p.powerupType.equals(Powerup.powerupList[4])) {
+                    shrink = false;
+                } else if (p.powerupType.equals(Powerup.powerupList[5])) {
+                    grow = false;
+                } else if (p.powerupType.equals(Powerup.powerupList[6])) {
+                    magnet = false;
                 }
             }
-        }, 10000);
+        }, powerupTime);
     }
 
     public void resetGame() {
+        timer.cancel();
+        timer = new Timer();
+
+        selectedCard = "";
+        card1 = "";
+        card2 = "";
+        card3 = "";
+
+        Track.trackNumber = 0;
+
+        gameTimer.resetTimer();
+        difficultyIncreaseTimer = 30;
+
         currentScreen = "startscreen";
 
-        timer.resetTimer();
         player = new Player();
         track = new Track();
         spawn = new SpawnObjects();
@@ -434,10 +579,21 @@ public class BasicGame implements GameLoop {
 
         timerDebounce = false;
         powerupDebounce = false;
+        powerupTime = 10000;
+        powerupSpawnThreshold = 50;
+
+        activatedPowerup = "";
+        powerupInfoShown = false;
 
         doubleCoins = false;
         infiniteFuel = false;
         ghost = false;
+        energyCoin = false;
+        shrink = false;
+        grow = false;
+        magnet = false;
+
+        fuelSpawnTimerStarted = false;
 
         startButtonBounds = new Rectangle(224, 300, 225, 105);
 
@@ -451,6 +607,6 @@ public class BasicGame implements GameLoop {
         }
 
         spawn.spawnedObjects.add(firstCar);
-        SaxionApp.drawImage("resource/auto.png", firstCar.x, firstCar.y, firstCar.width, firstCar.height);
+        SaxionApp.drawImage("resource/Car Types/auto.png", firstCar.x, firstCar.y, firstCar.width, firstCar.height);
     }
 }

@@ -4,9 +4,23 @@ import java.awt.*;
 
 public class Powerup {
     static String[] powerupList = {
-            "resource/2x coins.png",
-            "resource/inf fuel.png",
-            "resource/ghost.png"
+            "resource/Powerups/2x coins.png",
+            "resource/Powerups/inf fuel.png",
+            "resource/Powerups/ghost.png",
+            "resource/Powerups/energy coin.png",
+            "resource/Powerups/shrink.png",
+            "resource/Powerups/grow.png",
+            "resource/Powerups/magnet.png"
+    };
+
+    static String[] infoCards = {
+            "resource/Info Cards/2x coins info.png",
+            "resource/Info Cards/inf fuel info.png",
+            "resource/Info Cards/ghost info.png",
+            "resource/Info Cards/energy coin info.png",
+            "resource/Info Cards/shrink info.png",
+            "resource/Info Cards/grow info.png",
+            "resource/Info Cards/magnet info.png"
     };
 
     int width, height = 80;

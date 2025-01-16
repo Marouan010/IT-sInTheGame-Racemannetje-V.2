@@ -7,38 +7,27 @@ public class Sfx {
     public static void Sounds() {
 
     }
-    public static void backgroundsound(){
-        SaxionApp.playSound("resource/geluid1.wav");
+
+    public static void backgroundsound() {
+        SaxionApp.playSound("resource/Sfx/geluid1.wav", true);
     }
-    public static void toeter(KeyboardEvent KeyboardEvent){
-        if(KeyboardEvent.isKeyPressed()){
+
+    public static void toeter(KeyboardEvent KeyboardEvent) {
+        if (KeyboardEvent.isKeyPressed()) {
             //controle spatie
-            if(KeyboardEvent.getKeyCode() == KeyboardEvent.VK_SPACE){
+            if (KeyboardEvent.getKeyCode() == KeyboardEvent.VK_SPACE) {
                 //toeter sound.
-                SaxionApp.playSound("resource/Goofy1.wav");
+                SaxionApp.playSound("resource/Sfx/Goofy1.wav");
             }
 
 
         }
-
-
-
-        }
-    public static void remmen(KeyboardEvent KeyboardEvent){
-        if(KeyboardEvent.isKeyPressed()){
-            if(KeyboardEvent.getKeyCode() == KeyboardEvent.VK_S){
-                SaxionApp.playSound("resource/brakingsound.wav");
-            }
-            }
-
-
-        }
-
-
-
-
-
     }
+
+    public static void powerupPickup() {
+        SaxionApp.playSound("resource/Sfx/powerup pickup.wav");
+    }
+}
 
 
 

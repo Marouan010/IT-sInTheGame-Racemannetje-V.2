@@ -2,12 +2,15 @@ import nl.saxion.app.SaxionApp;
 
 public class Track {
     String[] tracks = {
-            "resource/baan stil.png",
-            "resource/baan1 stil.png",
-            "resource/baan2 stil.png",
+            "resource/Tracks/baan stil.png",
+            "resource/Tracks/baan1 stil.png",
+            "resource/Tracks/baan2 stil.png",
+            "resource/Tracks/baan3 stil.png",
+            "resource/Tracks/baan4 stil.png",
+            "resource/Tracks/baan5 stil.png"
     };
 
-    int trackNumber = 0;
+    static int trackNumber = 0;
     String currentTrack = tracks[trackNumber];
     String fuelBar = "resource/tankbar.png";
     String speedometer = "resource/Speedometer.png";
@@ -57,7 +60,7 @@ public class Track {
     public void drawSpeedNumber(int x, int y, int digitWidth, int digitHeight) {
         String[] numberImages = new String[10];
         for (int i = 0; i <= 9; i++) {
-            numberImages[i] = "resource/numbers/" + i + ".png";
+            numberImages[i] = "resource/Speedometer Numbers/" + i + ".png";
         }
 
         // Gebruik displaySpeed in plaats van speed
@@ -80,7 +83,7 @@ public class Track {
         if (speed > 10){
             drawSpeedNumber(540,386, 20, 48);
         } else {
-            drawSpeedNumber(550,386, 20, 48);
+            drawSpeedNumber(553,386, 20, 48);
         }
 
         y += speed;

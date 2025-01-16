@@ -2,7 +2,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class GameTimer {
-    Timer timer = new Timer();
+    static Timer timer = new Timer();
     private int totalSeconds = 0;
     private boolean timerRunning;
     private boolean taskCompleted = false;
@@ -32,5 +32,9 @@ public class GameTimer {
         int minutes = totalSeconds / 60;
         int seconds = totalSeconds % 60;
         return String.format("%02d:%02d", minutes, seconds);
+    }
+
+    public int getTotalSeconds() {
+        return totalSeconds;
     }
 }

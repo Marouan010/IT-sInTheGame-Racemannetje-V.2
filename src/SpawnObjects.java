@@ -12,7 +12,6 @@ public class SpawnObjects {
     ArrayList<Fuel> spawnedFuel = new ArrayList<>();
     ArrayList<Powerup> spawnedPowerups = new ArrayList<>();
 
-    boolean powerupSpawned = false;
     int lastObjectTrack = 1;
     String previousPowerupType = "";
     int initY = -300;
@@ -33,13 +32,23 @@ public class SpawnObjects {
 
                 if (randomObject == 1) {
                     EnemyCar cone = new EnemyCar(10, -300, 42, 42, 0, randomTrack);
-                    cone.carType = "cone";
                     cone.speed = 3;
                     cone.carType = "resource/cone 42-42.png";
                     cone.x+= 12;
                     spawnedObjects.add(cone);
                 } else {
                     EnemyCar car = new EnemyCar(10, -300, 65, 140, 5, randomTrack);
+                    if (Track.trackNumber == 1) {
+                        car.carType = EnemyCar.carTypes[1][SaxionApp.getRandomValueBetween(0,EnemyCar.carTypes[1].length)];
+                    } else if (Track.trackNumber == 2) {
+                        car.carType = EnemyCar.carTypes[2][SaxionApp.getRandomValueBetween(0,EnemyCar.carTypes[2].length)];
+                    } else if (Track.trackNumber == 3) {
+                        car.carType = EnemyCar.carTypes[3][SaxionApp.getRandomValueBetween(0,EnemyCar.carTypes[3].length)];
+                    } else if (Track.trackNumber == 4) {
+                        car.carType = EnemyCar.carTypes[4][SaxionApp.getRandomValueBetween(0, EnemyCar.carTypes[4].length)];
+                    } else if (Track.trackNumber == 5) {
+                        car.carType = EnemyCar.carTypes[5][SaxionApp.getRandomValueBetween(0, EnemyCar.carTypes[5].length)];
+                    }
                     spawnedObjects.add(car);
                 }
 
@@ -59,6 +68,9 @@ public class SpawnObjects {
 
                 for (int j = 0; j < 3; j++) {
                     Coin coin = new Coin(10, initY, 70, 70, randomTrack);
+                    if (BasicGame.energyCoin) {
+                        coin.coinImage = "resource/coin energy.png";
+                    }
                     coin.x -= 3;
                     spawnedCoins.add(coin);
                     initY-= 55;

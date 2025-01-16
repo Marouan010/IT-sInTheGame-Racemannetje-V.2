@@ -7,13 +7,13 @@ public class Player {
 
     String imageFile = "resource/auto me.png";
     String fuelTankIcon = "resource/fuel tank 60-60.png";
-    String nummers = "resource/nummers.png";
 
+    int normalWidth = 65;
     int width = 65;
     int height = 140;
     int x = BasicGame.screenWidth / 2 - 42;
     int y = BasicGame.screenHeight - height - 15;
-    int speed = 10; // snelheid van links en rechts bewegen
+    int speed = 7; // snelheid van links en rechts bewegen
     Rectangle boundingBox = new Rectangle();
 
     // Stats
@@ -52,7 +52,7 @@ public class Player {
             x -= speed;
             boundingBox.x -= speed;
         }
-        if (rightPressed && x < 460) {
+        if (!BasicGame.shrink && !BasicGame.grow && rightPressed && x < 460 || BasicGame.shrink && rightPressed && x < 493 || BasicGame.grow && rightPressed && x < 400) {
             x += speed;
             boundingBox.y += speed;
         }
@@ -97,11 +97,27 @@ public class Player {
 
     public void draw() {
         InputCheck();
-//        if (BasicGame) {
-//            imageFile = "resource/auto me ghost.png";
-//        } else {
-//            imageFile = "resource/auto me.png";
-//        }
+
+        if (BasicGame.shrink) {
+            width = 33;
+            height = 70;
+            y = BasicGame.screenHeight - height - 5;
+        } else if (BasicGame.grow) {
+            width = 130;
+            height = 280;
+            y = BasicGame.screenHeight - height;
+        } else {
+            width = normalWidth;
+            height = 140;
+            y = BasicGame.screenHeight - height - 15;
+        }
+
+        if (BasicGame.ghost) {
+            imageFile = "resource/Player Cars/auto me ghost.png";
+        } else {
+            imageFile = "resource/Player Cars/auto me.png";
+        }
+
         SaxionApp.drawImage(imageFile, x, y, width, height);
         drawFuelGauge();
         drawFuelIcon();
