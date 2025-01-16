@@ -27,6 +27,14 @@ public class Sfx {
     public static void powerupPickup() {
         SaxionApp.playSound("resource/Sfx/powerup pickup.wav");
     }
+
+    public static void coinPickup() {
+        SaxionApp.playSound("resource/Sfx/coin pickup.wav");
+    }
+
+    public static void fuelPickup() {
+        SaxionApp.playSound("resource/Sfx/fuel pickup.wav");
+    }
 }
 
 

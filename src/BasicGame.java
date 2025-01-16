@@ -214,6 +214,7 @@ public class BasicGame implements GameLoop {
         if (player.collectedCoins % powerupSpawnThreshold != 0) {
             powerupDebounce = false;
         }
+        SaxionApp.setTextDrawingColor(Color.red);
         player.draw();
 
         if (gameTimer.getTotalSeconds() == difficultyIncreaseTimer) {
@@ -232,11 +233,12 @@ public class BasicGame implements GameLoop {
         if (currentScreen.equals("gamescreen")) {
 
             SaxionApp.drawImage("resource/punten 300-200.png", 310, -50);
-            SaxionApp.drawText(String.valueOf(player.collectedCoins), 435, 30, 50); // coins collected
-            SaxionApp.drawText(String.valueOf(player.carsPassed), 10, 718, 50); // cars passed
 
+            SaxionApp.setTextDrawingColor(Color.white);
+            SaxionApp.drawText(String.valueOf(player.collectedCoins), 435, 30, 50); // coins collected
 
             String currentTime = gameTimer.getTime();
+            SaxionApp.setTextDrawingColor(Color.pink);
             SaxionApp.drawImage("resource/afstand 300-200.png", 50, -50); //Heb de afstand foto gebruikt, maar moet nog vervangen worden
             SaxionApp.drawText(" " + currentTime, 165, 35, 40);
         }
@@ -357,6 +359,7 @@ public class BasicGame implements GameLoop {
 
 
         if (currentScreen.equals("deathscreen")) {
+            SaxionApp.setTextDrawingColor(Color.white);
             gameTimer.timer.cancel();
 
             if (keyboardEvent.isKeyPressed()) {
@@ -443,6 +446,8 @@ public class BasicGame implements GameLoop {
                         player.fuel += 125;
                     }
                 }
+
+                Sfx.coinPickup();
             }
         }
     }
@@ -482,6 +487,8 @@ public class BasicGame implements GameLoop {
                 } else {
                     player.fuel += 1500;
                 }
+
+                Sfx.fuelPickup();
             }
         }
     }
