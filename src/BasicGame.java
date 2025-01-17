@@ -26,6 +26,17 @@ public class BasicGame implements GameLoop {
     Rectangle scoreButtonBounds;
     Rectangle backButtonBounds;
 
+    Rectangle playerCar1ButtonBounds = new Rectangle(147, 600, 65, 140);
+    Rectangle playerCar2ButtonBounds = new Rectangle(247, 600, 65, 140);
+    Rectangle playerCar3ButtonBounds = new Rectangle(347, 600, 65, 140);
+    Rectangle playerCar4ButtonBounds = new Rectangle(447, 600, 65, 140);
+    boolean playerCar2Unlocked = false;
+    boolean playerCar3Unlocked = false;
+    boolean playerCar4Unlocked = false;
+    int selectedPlayerCarBorderX = 142;
+    boolean drawCarUnlockInfo = false;
+    int whichCarUnlockInfo;
+    boolean carUnlockInfoTimerActive = false;
 
     String selectedCard = "";
     String card1 = "";
@@ -79,7 +90,6 @@ public class BasicGame implements GameLoop {
         scoreButtonBounds = new Rectangle(217, 450, 220, 75);
         // backButtonBounds = new Rectangle(0,50,100,120);
 
-
         int randomTrack = SaxionApp.getRandomValueBetween(1, 6);
         int initY = -1000;
         for (int j = 0; j < 3; j++) {
@@ -109,6 +119,16 @@ public class BasicGame implements GameLoop {
     public void startScreenLoop() {
         SaxionApp.clear();
 
+        if (Player.collectedPowerupsList.size() == 6 && !playerCar2Unlocked) {
+            playerCar2Unlocked = true;
+        }
+        if (Player.reachedSkyMap && !playerCar3Unlocked) {
+            playerCar3Unlocked = true;
+        }
+        if (Player.totalCollectedCoins >= 1000 && !playerCar4Unlocked) {
+            playerCar4Unlocked = true;
+        }
+
         SaxionApp.setBorderColor(Color.red);
         SaxionApp.drawImage("resource/totaal plaatje startscherm.png", 0, 0, 670, 780);
 
@@ -122,6 +142,47 @@ public class BasicGame implements GameLoop {
         SaxionApp.drawRectangle(scoreButtonBounds.x, scoreButtonBounds.y, scoreButtonBounds.width, scoreButtonBounds.height);
         SaxionApp.drawImage("resource/score knop groot.png", 180, 423);
 
+        SaxionApp.drawImage("resource/SelectedCarBorder.png", selectedPlayerCarBorderX, 595, 75, 150);
+        SaxionApp.drawImage("resource/CarSelectionBorder.png", 108, 567, 445, 200);
+        SaxionApp.drawImage("resource/Player Cars/auto me 1.png", 147, 600, 65, 140);
+        SaxionApp.drawImage("resource/Player Cars/auto me 2.png", 247, 600, 65, 140);
+        SaxionApp.drawImage("resource/Player Cars/auto me 3.png", 347, 600, 65, 140);
+        SaxionApp.drawImage("resource/Player Cars/auto me 4.png", 447, 600, 65, 140);
+
+        if (drawCarUnlockInfo) {
+            if (whichCarUnlockInfo == 2) {
+                SaxionApp.drawImage("resource/auto me 2 unlock info.png", 176, 147, 310, 150);
+                SaxionApp.setTextDrawingColor(Color.yellow);
+                SaxionApp.drawText("(" + Player.collectedPowerupsList.size() + "/6)", 360, 244, 27);
+            } else if (whichCarUnlockInfo == 3) {
+                SaxionApp.drawImage("resource/auto me 3 unlock info.png", 176, 147, 310, 150);
+            } else if (whichCarUnlockInfo == 4) {
+                SaxionApp.drawImage("resource/auto me 4 unlock info.png", 176, 147, 310, 150);
+                SaxionApp.setTextDrawingColor(Color.yellow);
+                SaxionApp.drawText("(" + Player.totalCollectedCoins + "/1000)", 317, 242, 27);
+            }
+
+            if (!carUnlockInfoTimerActive) {
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        drawCarUnlockInfo = false;
+                        carUnlockInfoTimerActive = false;
+                    }
+                }, 5000);
+            }
+            carUnlockInfoTimerActive = true;
+        }
+
+        if (!playerCar2Unlocked) {
+            SaxionApp.drawImage("resource/Player Cars/locked icon.png", 244, 625, 70, 70);
+        }
+        if (!playerCar3Unlocked) {
+            SaxionApp.drawImage("resource/Player Cars/locked icon.png", 344, 625, 70, 70);
+        }
+        if (!playerCar4Unlocked) {
+            SaxionApp.drawImage("resource/Player Cars/locked icon.png", 444, 625, 70, 70);
+        }
     }
 
     public void leaderboardScreenLoop() {
@@ -189,6 +250,10 @@ public class BasicGame implements GameLoop {
         SaxionApp.clear();
 
         frames++;
+
+        if (Track.currentTrack.equals("resource/Tracks/baan5 stil.png") && !Player.reachedSkyMap) {
+            Player.reachedSkyMap = true;
+        }
 
         if (!infiniteFuel) {
             player.decreaseFuelAcceleration();
@@ -444,7 +509,38 @@ public class BasicGame implements GameLoop {
                 if (scoreButtonBounds.contains(mouseX, mouseY)) {
 //                    System.out.println("leaderboard knop is ingedrukt.");
                     currentScreen = "leaderboard";
+                }
 
+                if (playerCar1ButtonBounds.contains(mouseX, mouseY)) {
+                    selectedPlayerCarBorderX = 142;
+                    Player.playerCarType = 1;
+                }
+                if (playerCar2ButtonBounds.contains(mouseX, mouseY)) {
+                    if (playerCar2Unlocked) {
+                        selectedPlayerCarBorderX = 242;
+                        Player.playerCarType = 2;
+                    } else {
+                        whichCarUnlockInfo = 2;
+                        drawCarUnlockInfo = true;
+                    }
+                }
+                if (playerCar3ButtonBounds.contains(mouseX, mouseY)) {
+                    if (playerCar3Unlocked) {
+                        selectedPlayerCarBorderX = 342;
+                        Player.playerCarType = 3;
+                    } else {
+                        whichCarUnlockInfo = 3;
+                        drawCarUnlockInfo = true;
+                    }
+                }
+                if (playerCar4ButtonBounds.contains(mouseX, mouseY)) {
+                    if (playerCar4Unlocked) {
+                        selectedPlayerCarBorderX = 442;
+                        Player.playerCarType = 4;
+                    } else {
+                        whichCarUnlockInfo = 4;
+                        drawCarUnlockInfo = true;
+                    }
                 }
 
             } else if (currentScreen.equals("leaderboard")) {
@@ -576,25 +672,46 @@ public class BasicGame implements GameLoop {
                 if (spawn.spawnedPowerups.get(i).powerupType.equals(Powerup.powerupList[0])) {
                     doubleCoins = true;
                     activatedPowerup = Powerup.infoCards[0];
+                    if (!Player.collectedPowerupsList.contains("doublecoins")) {
+                        Player.collectedPowerupsList.add("doublecoins");
+                    }
                 } else if (spawn.spawnedPowerups.get(i).powerupType.equals(Powerup.powerupList[1])) {
                     infiniteFuel = true;
                     player.fuel = player.maxFuel;
                     activatedPowerup = Powerup.infoCards[1];
+                    if (!Player.collectedPowerupsList.contains("infinitefuel")) {
+                        Player.collectedPowerupsList.add("infinitefuel");
+                    }
                 } else if (spawn.spawnedPowerups.get(i).powerupType.equals(Powerup.powerupList[2])) {
                     ghost = true;
                     activatedPowerup = Powerup.infoCards[2];
+                    if (!Player.collectedPowerupsList.contains("ghost")) {
+                        Player.collectedPowerupsList.add("ghost");
+                    }
                 } else if (spawn.spawnedPowerups.get(i).powerupType == Powerup.powerupList[3]) {
                     energyCoin = true;
                     activatedPowerup = Powerup.infoCards[3];
+                    if (!Player.collectedPowerupsList.contains("energycoin")) {
+                        Player.collectedPowerupsList.add("energycoin");
+                    }
                 } else if (spawn.spawnedPowerups.get(i).powerupType == Powerup.powerupList[4]) {
                     shrink = true;
                     activatedPowerup = Powerup.infoCards[4];
+                    if (!Player.collectedPowerupsList.contains("shrink")) {
+                        Player.collectedPowerupsList.add("shrink");
+                    }
                 } else if (spawn.spawnedPowerups.get(i).powerupType == Powerup.powerupList[5]) {
                     grow = true;
                     activatedPowerup = Powerup.infoCards[5];
+                    if (!Player.collectedPowerupsList.contains("grow")) {
+                        Player.collectedPowerupsList.add("grow");
+                    }
                 } else if (spawn.spawnedPowerups.get(i).powerupType == Powerup.powerupList[6]) {
                     magnet = true;
                     activatedPowerup = Powerup.infoCards[6];
+                    if (!Player.collectedPowerupsList.contains("magnet")) {
+                        Player.collectedPowerupsList.add("magnet");
+                    }
                 }
                 startPowerupTimer(spawn.spawnedPowerups.get(i));
                 spawn.spawnedPowerups.remove(spawn.spawnedPowerups.get(i));
@@ -644,11 +761,16 @@ public class BasicGame implements GameLoop {
         card3 = "";
 
         Track.trackNumber = 0;
+        Track.currentTrack = Track.tracks[Track.trackNumber];
+
+        Track.trackNumber = 0;
 
         gameTimer.resetTimer();
         difficultyIncreaseTimer = 30;
 
         currentScreen = "startscreen";
+
+        Player.totalCollectedCoins += player.collectedCoins;
 
         player = new Player();
         track = new Track();

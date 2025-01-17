@@ -1,11 +1,18 @@
 import nl.saxion.app.SaxionApp;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Player {
+    static int playerCarType = 1;
+
+    static int totalCollectedCoins = 0;
+    static ArrayList<String> collectedPowerupsList = new ArrayList<>();
+    static boolean reachedSkyMap = false;
+
     Track track = new Track();
 
-    String imageFile = "resource/auto me.png";
+    String imageFile = "resource/auto me " + playerCarType + ".png";
     String fuelTankIcon = "resource/fuel tank 60-60.png";
 
     int normalWidth = 65;
@@ -113,9 +120,9 @@ public class Player {
         }
 
         if (BasicGame.ghost) {
-            imageFile = "resource/Player Cars/auto me ghost.png";
+            imageFile = "resource/Player Cars/auto me " + playerCarType + " ghost.png";
         } else {
-            imageFile = "resource/Player Cars/auto me.png";
+            imageFile = "resource/Player Cars/auto me " + playerCarType + ".png";
         }
 
         SaxionApp.drawImage(imageFile, x, y, width, height);

@@ -1,7 +1,7 @@
 import nl.saxion.app.SaxionApp;
 
 public class Track {
-    String[] tracks = {
+    static String[] tracks = {
             "resource/Tracks/baan stil.png",
             "resource/Tracks/baan1 stil.png",
             "resource/Tracks/baan2 stil.png",
@@ -11,7 +11,7 @@ public class Track {
     };
 
     static int trackNumber = 0;
-    String currentTrack = tracks[trackNumber];
+    static String currentTrack = tracks[trackNumber];
     String fuelBar = "resource/tankbar.png";
     String speedometer = "resource/Speedometer.png";
 
