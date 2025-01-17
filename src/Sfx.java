@@ -23,6 +23,22 @@ public class Sfx {
 
         }
     }
+    public static void remmen(KeyboardEvent keyboardEvent){
+        if(keyboardEvent.isKeyPressed()){
+            if(keyboardEvent.getKeyCode() == KeyboardEvent.VK_S || keyboardEvent.getKeyCode() == KeyboardEvent.VK_DOWN) {
+                SaxionApp.playSound("resource/sfx/brakingsound.wav");
+            }
+        }
+    }
+
+    public static void tegenwind(KeyboardEvent keyboardEvent){
+        if(keyboardEvent.isKeyPressed()){
+            if(keyboardEvent.getKeyCode() == keyboardEvent.VK_W || keyboardEvent.getKeyCode() == keyboardEvent.VK_UP){
+                SaxionApp.playSound("resource/sfx/wind.wav");
+            }
+        }
+    }
+
 
     public static void powerupPickup() {
         SaxionApp.playSound("resource/Sfx/powerup pickup.wav");

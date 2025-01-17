@@ -22,7 +22,11 @@ public class BasicGame implements GameLoop {
 
     String currentScreen = "startscreen";
     Rectangle startButtonBounds;
-    //Rectangle leaderboardButtonBounds; Nog niet geïmplementeerd
+    //Rectangle leaderboardButtonBounds;
+    Rectangle scoreButtonBounds;
+    Rectangle backButtonBounds;
+
+
 
     String selectedCard = "";
     String card1 = "";
@@ -72,7 +76,12 @@ public class BasicGame implements GameLoop {
     public void init() {
         Sfx.backgroundsound();
 
-        startButtonBounds = new Rectangle(224, 300, 225, 105);
+        startButtonBounds = new Rectangle(224, 322, 220, 75);
+        scoreButtonBounds = new Rectangle(217,450,220,75);
+        backButtonBounds = new Rectangle(0,50,100,120);
+
+
+
 
         int randomTrack = SaxionApp.getRandomValueBetween(1, 6);
         int initY = -1000;
@@ -95,6 +104,7 @@ public class BasicGame implements GameLoop {
             case "cardscreen" -> cardScreenLoop();
             case "gamescreen" -> gameScreenLoop();
             case "deathscreen" -> deathScreenLoop();
+            case "leaderboard" -> leaderboardScreenLoop();
         }
 
     }
@@ -103,9 +113,35 @@ public class BasicGame implements GameLoop {
         SaxionApp.clear();
 
         SaxionApp.setBorderColor(Color.red);
-        SaxionApp.drawRectangle(startButtonBounds.x, startButtonBounds.y, startButtonBounds.width, startButtonBounds.height);
-        SaxionApp.drawImage("resource/Startscherm placeholder.png", 0, 0, 670, 780);
+        SaxionApp.drawImage("resource/totaal plaatje startscherm.png", 0, 0, 670, 780);
 
+        //startknop toevoegen
+        SaxionApp.setBorderColor(Color.red);
+        SaxionApp.drawRectangle(startButtonBounds.x, startButtonBounds.y, startButtonBounds.width, startButtonBounds.height);
+        SaxionApp.drawImage("resource/start knop groot.png", 180,300 );
+
+        //score knop toevoegen
+        SaxionApp.setBorderColor(Color.red);
+        SaxionApp.drawRectangle(scoreButtonBounds.x,scoreButtonBounds.y,scoreButtonBounds.width,scoreButtonBounds.height);
+        SaxionApp.drawImage("resource/score knop groot.png",180,423 );
+
+    }
+    public void leaderboardScreenLoop(){
+        SaxionApp.clear();
+        SaxionApp.drawImage("resource/leaderboard plaatje.png",0,0,670,780);
+
+        //titell
+        //SaxionApp.drawText("leaderboard", 250,100,30);
+        //test scores ( voor nu geen csv reader puur om te testen
+        //SaxionApp.drawText("1. Ali - 1250 coins", 250,200,20);
+        //SaxionApp.drawText("1. Kjeld - 950 coins", 250,250,20);
+        //SaxionApp.drawText("1. test - 100 coins", 250,300,20);
+
+
+        //terug knop toevoegen
+        SaxionApp.setBorderColor(Color.white);
+        SaxionApp.drawRectangle(backButtonBounds.x, backButtonBounds.y, backButtonBounds.width, backButtonBounds.height);
+        SaxionApp.drawImage("resource/exit button.png", backButtonBounds.x, backButtonBounds.y, backButtonBounds.width, backButtonBounds.height);
 
     }
 
@@ -329,9 +365,11 @@ public class BasicGame implements GameLoop {
 
     @Override
     public void keyboardEvent(KeyboardEvent keyboardEvent) {
-        //toeter methode
-
+        //sound effects toevoegen.
         Sfx.toeter(keyboardEvent);
+        Sfx.remmen(keyboardEvent);
+        Sfx.tegenwind(keyboardEvent);
+
 
         if (keyboardEvent.isKeyPressed()) {
             if (keyboardEvent.getKeyCode() == KeyboardEvent.VK_W || keyboardEvent.getKeyCode() == 38) {
@@ -392,7 +430,35 @@ public class BasicGame implements GameLoop {
 //                    System.out.println("Start button clicked!"); //debug
                     currentScreen = "gamescreen";
                 }
+
+                //controleren of er op de score knop is gedrukt.
+                if (scoreButtonBounds.contains(mouseX, mouseY)) {
+//                    System.out.println("leaderboard knop is ingedrukt.");
+                    currentScreen = "leaderboard";
+
+                    }
+
+        } else if (currentScreen.equals("leaderboard")) {
+                if (mouseEvent.isLeftMouseButton()) {
+                    int mouseX = mouseEvent.getX();
+                    int mouseY = mouseEvent.getY();
+
+                    if (backButtonBounds.contains(mouseX, mouseY)) {
+                        System.out.println("terug knop ingedrukt.");
+                        currentScreen = "startscreen";
+
+                    }
+
+
+
+                }
+
+
+
+
             }
+
+
         } else if (currentScreen.equals("cardscreen")) {
             if (mouseEvent.isLeftMouseButton()) {
                 int mouseX = mouseEvent.getX();
@@ -603,6 +669,7 @@ public class BasicGame implements GameLoop {
         fuelSpawnTimerStarted = false;
 
         startButtonBounds = new Rectangle(224, 300, 225, 105);
+        backButtonBounds = new Rectangle(0,50,100,120);
 
         int randomTrack = SaxionApp.getRandomValueBetween(1, 6);
         int initY = -1000;
